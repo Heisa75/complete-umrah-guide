@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Umrah Guide">
+<meta name="theme-color" content="#1B4332">
+<link rel="manifest" href="manifest.json">
+<title>دليل العمرة الشامل | Complete Umrah Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D48B;
+    --gold-dark: #8B6914;
+    --green-deep: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-light: #52B788;
+    --cream: #FDF8ED;
+    --cream-dark: #F5ECD7;
+    --text-primary: #2C1810;
+    --text-secondary: #5C4033;
+    --white: #FFFFFF;
+    --shadow: 0 4px 24px rgba(27,67,50,0.12);
+    --en-font: 'Outfit', sans-serif;
+    --ar-font: 'Noto Naskh Arabic', 'Amiri', serif;
+    --dua-font: 'Scheherazade New', serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body { font-family: var(--ar-font); background: var(--cream); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s; }
+
+  body::before { content: ''; position: fixed; inset: 0; opacity: 0.03; background-image: repeating-conic-gradient(var(--green-deep) 0% 25%, transparent 0% 50%) 0 0 / 40px 40px, repeating-conic-gradient(var(--gold) 0% 25%, transparent 0% 50%) 20px 20px / 40px 40px; pointer-events: none; z-index: 0; }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 20px 16px 60px; position: relative; z-index: 1; }
+
+  /* === RESTORE BANNER === */
+  .restore-banner {
+    display: none;
+    background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: fadeUp 0.5s ease;
+  }
+
+  .restore-banner.show { display: block; }
+
+  .restore-banner h3 { font-family: var(--dua-font); color: var(--gold); font-size: 1.3rem; margin-bottom: 4px; }
+  .restore-banner .restore-en { font-family: var(--en-font); color: var(--gold-light); font-size: 0.85rem; direction: ltr; }
+  .restore-banner .restore-info { font-family: var(--en-font); color: rgba(255,255,255,0.6); font-size: 0.75rem; direction: ltr; margin: 8px 0 14px; }
+
+  .restore-btns { display: flex; gap: 10px; justify-content: center; }
+
+  .restore-btn {
+    padding: 10px 24px;
+    border-radius: 10px;
+    border: none;
+    font-family: var(--en-font);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .restore-btn.primary { background: var(--gold); color: var(--green-deep); }
+  .restore-btn.secondary { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+  .restore-btn:hover { transform: translateY(-1px); }
+
+  /* === OFFLINE INDICATOR === */
+  .offline-bar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    background: #E74C3C;
+    color: white;
+    text-align: center;
+    padding: 6px;
+    font-family: var(--en-font);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .offline-bar.show { display: block; }
+
+  .online-restored {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 300;
+    background: var(--green-mid);
+    color: white;
+    text-align: center;
+    padding: 6px;
+    font-family: var(--en-font);
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: fadeDown 0.3s ease;
+  }
+
+  /* === PWA INSTALL PROMPT === */
+  .install-prompt {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 250;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(201,168,76,0.2);
+    align-items: center;
+    gap: 12px;
+    max-width: 360px;
+    width: 90%;
+    animation: fadeUp 0.5s ease;
+  }
+
+  .install-prompt.show { display: flex; }
+  .install-prompt .install-icon { font-size: 1.5rem; }
+  .install-prompt .install-text { flex: 1; }
+  .install-prompt .install-title { font-family: var(--en-font); font-size: 0.85rem; font-weight: 700; color: var(--green-deep); }
+  .install-prompt .install-desc { font-family: var(--en-font); font-size: 0.7rem; color: var(--text-secondary); }
+
+  .install-btn {
+    padding: 8px 16px;
+    background: var(--green-deep);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--en-font);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .install-dismiss {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  /* === CLOUD SYNC STATUS === */
+  .sync-status {
+    display: none;
+    position: fixed;
+    top: 60px;
+    right: 14px;
+    z-index: 200;
+    background: var(--white);
+    border-radius: 8px;
+    padding: 6px 12px;
+    box-shadow: var(--shadow);
+    font-family: var(--en-font);
+    font-size: 0.65rem;
+    font-weight: 600;
+    direction: ltr;
+    animation: fadeDown 0.3s ease;
+  }
+
+  .sync-status.syncing { display: block; color: #3498DB; }
+  .sync-status.synced { display: block; color: var(--green-mid); }
+  .sync-status.error { display: block; color: #E74C3C; }
+
+  /* === LANG TOGGLE === */
+  .lang-toggle { position: fixed; top: 14px; left: 14px; z-index: 200; display: flex; background: var(--white); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); overflow: hidden; }
+  .lang-btn { padding: 8px 14px; border: none; background: transparent; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; color: var(--text-secondary); }
+  .lang-btn.active { background: var(--green-deep); color: var(--white); }
+
+  /* === LIVE CLOCK === */
+  .live-clock-bar { position: fixed; top: 14px; right: 14px; z-index: 200; background: var(--white); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); padding: 8px 14px; font-family: var(--en-font); font-size: 0.78rem; font-weight: 600; color: var(--green-deep); direction: ltr; text-align: center; min-width: 100px; }
+  .live-clock-bar .clock-time { font-size: 1rem; font-weight: 700; }
+  .live-clock-bar .clock-date { font-size: 0.65rem; color: var(--text-secondary); margin-top: 1px; }
+
+  /* === HEADER === */
+  .header { text-align: center; padding: 55px 20px 30px; margin-bottom: 30px; }
+  .header::before { content: '﷽'; display: block; font-family: var(--dua-font); font-size: 2rem; color: var(--gold); margin-bottom: 20px; opacity: 0; animation: fadeDown 0.8s ease forwards; }
+  .header-ornament { width: 120px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 0 auto 16px; }
+  .header h1 { font-family: var(--dua-font); font-size: 2.6rem; font-weight: 700; color: var(--green-deep); line-height: 1.4; opacity: 0; animation: fadeDown 0.8s 0.2s ease forwards; }
+  .header .subtitle { font-size: 1.05rem; color: var(--text-secondary); margin-top: 6px; opacity:0; animation: fadeDown 0.8s 0.35s ease forwards; }
+  .header .subtitle-en { font-family: var(--en-font); font-size: 0.95rem; color: var(--text-secondary); margin-top: 4px; direction: ltr; opacity:0; animation: fadeDown 0.8s 0.45s ease forwards; }
+  .header .mosque-icon { font-size: 3rem; margin-top: 16px; opacity:0; animation: fadeDown 0.8s 0.55s ease forwards; }
+
+  /* === ONBOARDING MODAL === */
+  .onboard-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,14,26,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .onboard-overlay.show { display: flex; }
+
+  .onboard-card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 36px 28px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: fadeUp 0.5s ease;
+  }
+
+  .onboard-card .ob-icon { font-size: 3rem; margin-bottom: 12px; }
+  .onboard-card h2 { font-family: var(--dua-font); font-size: 1.6rem; color: var(--green-deep); margin-bottom: 4px; }
+  .onboard-card .ob-sub { font-family: var(--en-font); font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+
+  .ob-field { margin-bottom: 18px; text-align: right; }
+  .ob-field label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--green-deep); margin-bottom: 6px; }
+  .ob-field .ob-label-en { font-family: var(--en-font); font-size: 0.7rem; color: var(--text-secondary); direction: ltr; text-align: left; }
+
+  .ob-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--cream-dark);
+    border-radius: 12px;
+    font-family: var(--ar-font);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .ob-input:focus { border-color: var(--gold); }
+
+  .ob-gender-options {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .ob-gender-btn {
+    flex: 1;
+    padding: 14px 12px;
+    border: 2px solid var(--cream-dark);
+    border-radius: 14px;
+    background: var(--cream);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .ob-gender-btn:hover { border-color: var(--gold); }
+  .ob-gender-btn.selected { border-color: var(--green-deep); background: rgba(27,67,50,0.08); }
+  .ob-gender-btn .ob-g-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+  .ob-gender-btn .ob-g-label { font-size: 0.85rem; font-weight: 700; color: var(--green-deep); }
+  .ob-gender-btn .ob-g-label-en { font-family: var(--en-font); font-size: 0.7rem; color: var(--text-secondary); }
+
+  .ob-start-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+    color: var(--white);
+    font-family: var(--ar-font);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s;
+  }
+  .ob-start-btn:hover { transform: translateY(-2px); }
+  .ob-start-btn:disabled { opacity: 0.5; pointer-events: none; }
+
+  /* === USER BADGE === */
+  .user-badge {
+    display: none;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .user-badge.show { display: block; }
+  .user-badge-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--white);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px;
+    padding: 8px 18px;
+    box-shadow: var(--shadow);
+    font-family: var(--en-font);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--green-deep);
+  }
+  .user-badge-inner .ub-icon { font-size: 1.1rem; }
+
+  /* === GENDER-SPECIFIC CONTENT === */
+  .gender-male { display: none; }
+  .gender-female { display: none; }
+  body.user-male .gender-male { display: block; }
+  body.user-male .gender-female { display: none !important; }
+  body.user-female .gender-female { display: block; }
+  body.user-female .gender-male { display: none !important; }
+  body:not(.user-male):not(.user-female) .gender-male,
+  body:not(.user-male):not(.user-female) .gender-female { display: block; }
+
+  .gender-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: var(--en-font);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .gender-tag.men-only { background: #DBEAFE; color: #1E40AF; }
+  .gender-tag.women-only { background: #FCE7F3; color: #9D174D; }
+
+  /* === START BUTTON === */
+  .start-umrah-wrap { text-align: center; margin-bottom: 24px; }
+  .start-umrah-btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 36px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); color: var(--white); font-family: var(--ar-font); font-size: 1.15rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); transition: all 0.3s; }
+  .start-umrah-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(27,67,50,0.2); }
+  .start-umrah-btn.started { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); pointer-events: none; }
+
+  /* === TIMER === */
+  .umrah-timer { text-align: center; margin-bottom: 24px; display: none; }
+  .umrah-timer.active { display: block; }
+  .timer-card { display: inline-flex; flex-direction: column; align-items: center; background: var(--white); border-radius: 14px; padding: 16px 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); }
+  .timer-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+  .timer-label-en { font-family: var(--en-font); font-size: 0.7rem; color: var(--text-secondary); direction: ltr; }
+  .timer-started { font-family: var(--en-font); font-size: 0.75rem; color: var(--gold-dark); margin-top: 2px; direction: ltr; }
+  .timer-elapsed { font-family: var(--en-font); font-size: 2rem; font-weight: 700; color: var(--green-deep); direction: ltr; letter-spacing: 2px; margin-top: 4px; }
+
+  .timer-paused-label { display: none; font-family: var(--en-font); font-size: 0.75rem; color: #E74C3C; font-weight: 700; margin-top: 4px; animation: blink 1s infinite; }
+  .timer-paused-label.show { display: block; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .pause-btn {
+    margin-top: 10px;
+    padding: 8px 24px;
+    border: 2px solid var(--green-mid);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--green-deep);
+    font-family: var(--en-font);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .pause-btn:hover { background: var(--cream-dark); }
+  .pause-btn.paused { border-color: var(--green-deep); background: var(--green-deep); color: var(--white); }
+
+  /* === PROGRESS === */
+  .progress-wrap { background: var(--white); border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); position: sticky; top: 8px; z-index: 100; }
+  .progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; font-weight: 600; color: var(--green-deep); }
+  .progress-label-en { font-family: var(--en-font); font-size: 0.75rem; color: var(--green-mid); direction: ltr; }
+  .progress-bar-bg { height: 8px; background: var(--cream-dark); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-deep), var(--green-light)); border-radius: 4px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .progress-steps { display: flex; justify-content: space-between; margin-top: 10px; }
+  .progress-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--cream-dark); border: 2px solid var(--cream-dark); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--text-secondary); transition: all 0.4s ease; cursor: pointer; font-family: var(--en-font); }
+  .progress-dot.completed { background: var(--gold); border-color: var(--gold); color: var(--white); }
+
+  /* === STEP CARD === */
+  .step-card { background: var(--white); border-radius: 20px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; opacity:0; transform: translateY(20px); transition: all 0.3s ease; }
+  .step-card.visible { opacity: 1; transform: translateY(0); }
+  .step-header { background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; user-select: none; transition: filter 0.3s; }
+  .step-header:hover { filter: brightness(1.1); }
+  .step-number { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--en-font); font-size: 1.2rem; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+  .step-title-wrap { flex: 1; }
+  .step-title { font-family: var(--dua-font); font-size: 1.45rem; font-weight: 700; color: var(--white); line-height: 1.3; }
+  .step-title-en { font-family: var(--en-font); font-size: 0.85rem; font-weight: 500; color: var(--gold-light); direction: ltr; text-align: left; margin-top: 2px; }
+  .step-subtitle { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .step-subtitle-en { font-family: var(--en-font); font-size: 0.72rem; color: rgba(255,255,255,0.45); direction: ltr; text-align: left; }
+  .step-toggle { color: var(--gold); font-size: 1.4rem; transition: transform 0.3s; flex-shrink: 0; }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+  .step-body { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .step-card.open .step-body { max-height: 15000px; }
+  .step-content { padding: 24px; }
+
+  .section-block { margin-bottom: 20px; }
+  .section-title { font-family: var(--dua-font); font-size: 1.15rem; font-weight: 700; color: var(--green-deep); margin-bottom: 4px; padding-bottom: 6px; border-bottom: 2px solid var(--gold-light); display: flex; align-items: center; gap: 8px; }
+  .section-title-en { font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; color: var(--green-mid); direction: ltr; text-align: left; margin-bottom: 10px; }
+  .text-block { font-size: 1.02rem; line-height: 2; color: var(--text-primary); margin-bottom: 6px; }
+  .text-block-en { font-family: var(--en-font); font-size: 0.88rem; line-height: 1.7; color: var(--text-secondary); direction: ltr; text-align: left; margin-bottom: 10px; padding-left: 12px; border-left: 2px solid var(--cream-dark); }
+
+  .dua-box { background: linear-gradient(135deg, #FFF9E6, #FDF3D0); border: 1px solid var(--gold-light); border-right: 4px solid var(--gold); border-radius: 12px; padding: 18px 20px; margin: 12px 0; }
+  .dua-label { font-size: 0.78rem; font-weight: 700; color: var(--gold-dark); letter-spacing: 0.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .dua-label-en { font-family: var(--en-font); font-size: 0.7rem; font-weight: 600; color: var(--gold-dark); direction: ltr; text-align: left; opacity: 0.7; margin-bottom: 8px; }
+  .dua-arabic { font-family: var(--dua-font); font-size: 1.5rem; line-height: 2.4; color: var(--green-deep); text-align: center; margin: 8px 0; direction: rtl; }
+  .dua-translation { font-size: 0.85rem; color: var(--text-secondary); text-align: center; font-style: italic; line-height: 1.9; }
+  .dua-translation-en { font-family: var(--en-font); font-size: 0.78rem; color: var(--text-secondary); text-align: center; direction: ltr; line-height: 1.6; opacity: 0.8; margin-top: 4px; }
+  .dua-separator { width: 40%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-light), transparent); margin: 10px auto; }
+
+  .quran-box { background: linear-gradient(135deg, #F5F0FF, #EDE6FF); border: 1px solid #C4B5FD; border-right: 4px solid #7C3AED; border-radius: 12px; padding: 18px 20px; margin: 12px 0; }
+  .quran-box .dua-label { color: #7C3AED; }
+  .quran-box .dua-label-en { color: #7C3AED; }
+  .quran-box .dua-arabic { color: #4C1D95; }
+
+  .note-box { background: #F0FAF4; border: 1px solid var(--green-light); border-right: 4px solid var(--green-mid); border-radius: 12px; padding: 14px 18px; margin: 12px 0; font-size: 0.93rem; line-height: 1.9; color: var(--green-deep); }
+  .note-en { font-family: var(--en-font); font-size: 0.8rem; color: var(--green-mid); direction: ltr; text-align: left; margin-top: 6px; line-height: 1.5; opacity: 0.85; }
+  .warn-box { background: #FFF5F5; border: 1px solid #FCA5A5; border-right: 4px solid #DC2626; border-radius: 12px; padding: 14px 18px; margin: 12px 0; font-size: 0.93rem; line-height: 1.9; color: #991B1B; }
+  .warn-en { font-family: var(--en-font); font-size: 0.8rem; color: #B91C1C; direction: ltr; text-align: left; margin-top: 6px; line-height: 1.5; opacity: 0.85; }
+
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--cream-dark); cursor: pointer; }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--green-mid); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; margin-top: 4px; }
+  .check-item.checked .check-box { background: var(--green-deep); border-color: var(--green-deep); }
+  .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 0.8rem; font-weight: bold; }
+  .check-item.checked .check-text { text-decoration: line-through; opacity: 0.6; }
+  .check-text { font-size: 0.95rem; line-height: 1.8; transition: all 0.3s; }
+  .check-text-en { font-family: var(--en-font); font-size: 0.78rem; color: var(--text-secondary); direction: ltr; text-align: left; display: block; margin-top: 2px; }
+
+  .timestamp-badge { display: none; font-family: var(--en-font); font-size: 0.65rem; color: var(--green-mid); background: var(--cream-dark); padding: 2px 8px; border-radius: 6px; margin-top: 4px; direction: ltr; text-align: left; white-space: nowrap; }
+  .timestamp-badge.visible { display: inline-block; }
+
+  .counter-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px; background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); border-radius: 16px; margin: 16px 0; }
+  .counter-title { font-family: var(--dua-font); font-size: 1.2rem; color: var(--gold-light); }
+  .counter-title-en { font-family: var(--en-font); font-size: 0.8rem; color: rgba(255,255,255,0.5); direction: ltr; }
+  .counter-display { font-family: var(--en-font); font-size: 3.5rem; font-weight: 700; color: var(--white); width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; }
+  .counter-label { color: var(--gold-light); font-size: 0.95rem; }
+  .counter-buttons { display: flex; gap: 16px; }
+  .counter-btn { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(255,255,255,0.1); color: var(--white); font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .counter-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+  .counter-btn:active { transform: scale(0.95); }
+  .counter-btn.reset { width: auto; border-radius: 25px; padding: 0 20px; font-size: 0.85rem; font-family: var(--en-font); }
+  .counter-rounds { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .round-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--gold); background: transparent; transition: all 0.3s; }
+  .round-dot.filled { background: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.5); }
+
+  .round-log { width: 100%; margin-top: 12px; }
+  .round-log-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; font-family: var(--en-font); font-size: 0.72rem; color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.08); direction: ltr; }
+  .round-log-item:last-child { border-bottom: none; }
+  .round-log-item .rnd-num { font-weight: 700; color: var(--gold-light); }
+  .round-log-item .rnd-time { opacity: 0.8; }
+  .round-log-item .rnd-dur { color: var(--gold-light); font-weight: 600; }
+
+  .complete-btn { width: 100%; padding: 14px; margin-top: 16px; border: 2px solid var(--green-mid); background: transparent; color: var(--green-deep); border-radius: 12px; font-family: var(--ar-font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+  .complete-btn:hover { background: var(--cream-dark); }
+  .complete-btn.done { background: var(--gold); border-color: var(--gold); color: var(--white); }
+
+  .activity-log-section { background: var(--white); border-radius: 20px; margin-top: 24px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; }
+  .activity-log-header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px 24px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .activity-log-header h3 { font-family: var(--dua-font); font-size: 1.2rem; color: var(--gold); flex: 1; }
+  .activity-log-header .log-count { font-family: var(--en-font); font-size: 0.75rem; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 10px; }
+  .activity-log-body { max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+  .activity-log-section.open .activity-log-body { max-height: 5000px; }
+  .log-table { width: 100%; border-collapse: collapse; }
+  .log-table th { font-family: var(--en-font); font-size: 0.7rem; font-weight: 700; color: var(--green-deep); text-align: left; padding: 10px 14px; background: var(--cream-dark); border-bottom: 2px solid var(--gold-light); direction: ltr; }
+  .log-table td { font-family: var(--en-font); font-size: 0.75rem; padding: 8px 14px; border-bottom: 1px solid var(--cream-dark); color: var(--text-primary); direction: ltr; text-align: left; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .log-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; font-family: var(--en-font); }
+  .log-tag.start { background: #DBEAFE; color: #1E40AF; }
+  .log-tag.step { background: #D1FAE5; color: #065F46; }
+  .log-tag.round { background: #FEF3C7; color: #92400E; }
+  .log-tag.check { background: #EDE9FE; color: #5B21B6; }
+  .log-tag.complete { background: #FCE7F3; color: #9D174D; }
+
+  .export-buttons { display: flex; gap: 10px; margin: 16px; flex-wrap: wrap; }
+  .export-btn { padding: 10px 20px; border: 2px solid var(--green-mid); background: transparent; color: var(--green-deep); border-radius: 10px; font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+  .export-btn:hover { background: var(--green-deep); color: var(--white); }
+  .export-btn.cloud { border-color: #3498DB; color: #3498DB; }
+  .export-btn.cloud:hover { background: #3498DB; color: white; }
+  .export-btn.reset-btn { border-color: #E74C3C; color: #E74C3C; }
+  .export-btn.reset-btn:hover { background: #E74C3C; color: white; }
+
+  .completed-banner { display: none; text-align: center; padding: 40px 24px; background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); border-radius: 20px; margin-top: 20px; box-shadow: var(--shadow); }
+  .completed-banner.show { display: block; animation: fadeUp 0.6s ease; }
+  .completed-banner .big-icon { font-size: 3rem; margin-bottom: 16px; }
+  .completed-banner h2 { font-family: var(--dua-font); font-size: 1.8rem; color: var(--gold); margin-bottom: 4px; }
+  .completed-banner .en-title { font-family: var(--en-font); font-size: 1rem; color: var(--gold-light); direction: ltr; margin-bottom: 12px; }
+  .completed-banner p { color: var(--cream); font-size: 1.05rem; line-height: 2; }
+  .completed-banner .en-text { font-family: var(--en-font); font-size: 0.85rem; color: rgba(255,255,255,0.7); direction: ltr; line-height: 1.6; margin-top: 8px; }
+  .completed-banner .total-duration { font-family: var(--en-font); font-size: 1.4rem; font-weight: 700; color: var(--gold); margin-top: 12px; direction: ltr; }
+
+  .about-section { background: linear-gradient(135deg, var(--green-deep), #122c21); border-radius: 20px; padding: 32px 24px; margin-top: 40px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; border: 1px solid rgba(201,168,76,0.15); }
+  .about-section::after { content: '🕋'; position: absolute; left: -20px; bottom: -30px; font-size: 10rem; opacity: 0.03; pointer-events: none; }
+  .about-section .about-icon { font-size: 2.2rem; margin-bottom: 12px; }
+  .about-section h3 { font-family: var(--dua-font); color: var(--gold); font-size: 1.6rem; margin-bottom: 12px; }
+  .about-section .about-title-en { font-family: var(--en-font); color: var(--gold); font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; direction: ltr; }
+  .about-section p { font-size: 0.95rem; line-height: 2; color: var(--cream); margin-bottom: 14px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .about-section .about-text-en { font-family: var(--en-font); font-size: 0.85rem; direction: ltr; color: rgba(255,255,255,0.85); line-height: 1.7; margin-bottom: 0; }
+  .about-section .heart-icon { color: var(--gold); font-size: 1.2rem; display: block; margin: 16px auto; }
+
+  .contact-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 10px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.3); border-radius: 12px; color: var(--gold-light); font-family: var(--en-font); font-size: 0.9rem; text-decoration: none; transition: all 0.3s; }
+  .contact-btn:hover { background: rgba(201,168,76,0.2); color: var(--white); }
+  .contact-btn .contact-text-ar { font-family: var(--ar-font); }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 2rem; }
+    .dua-arabic { font-size: 1.2rem; }
+    .step-title { font-size: 1.2rem; }
+    .counter-display { font-size: 2.8rem; width: 80px; height: 80px; }
+    .log-table th, .log-table td { padding: 6px 8px; font-size: 0.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="offline-bar" id="offlineBar">📡 You're offline — don't worry, the app works fully offline!</div>
+<div class="online-restored" id="onlineBar" style="display:none;">✅ Back online</div>
+<div class="sync-status" id="syncStatus"></div>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" aria-label="Toggle Bilingual Mode" onclick="setLang('both',this)">ثنائي</button>
+  <button class="lang-btn" aria-label="Toggle Arabic Language" onclick="setLang('ar',this)">عربي</button>
+  <button class="lang-btn" aria-label="Toggle English Language" onclick="setLang('en',this)">EN</button>
+</div>
+
+<div class="live-clock-bar">
+  <div class="clock-time" id="liveClock" aria-live="polite">--:--:--</div>
+  <div class="clock-date" id="liveDate">---</div>
+</div>
+
+<div class="install-prompt" id="installPrompt">
+  <div class="install-icon">📲</div>
+  <div class="install-text">
+    <div class="install-title">Install Umrah Guide</div>
+    <div class="install-desc">Works offline — no internet needed</div>
+  </div>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="install-dismiss" aria-label="Dismiss Install Prompt" onclick="document.getElementById('installPrompt').classList.remove('show')">×</button>
+</div>
+
+<div class="container">
+
+  <!-- ONBOARDING MODAL -->
+  <div class="onboard-overlay" id="onboardOverlay">
+    <div class="onboard-card">
+      <div class="ob-icon">🕋</div>
+      <h2>بسم الله الرحمن الرحيم</h2>
+      <div class="ob-sub">Enter your details to begin your Umrah journey</div>
+      <div class="ob-field">
+        <label for="obName">الاسم <span class="ob-label-en">Your Name</span></label>
+        <input class="ob-input" id="obName" type="text" placeholder="أدخل اسمك / Enter your name" autocomplete="off">
+      </div>
+      <div class="ob-field">
+        <label>الجنس <span class="ob-label-en">Gender (to personalize rules)</span></label>
+        <div class="ob-gender-options">
+          <button class="ob-gender-btn" data-gender="male" onclick="selectGender('male',this)">
+            <span class="ob-g-icon">🧔</span>
+            <span class="ob-g-label">رجل</span>
+            <span class="ob-g-label-en">Male</span>
+          </button>
+          <button class="ob-gender-btn" data-gender="female" onclick="selectGender('female',this)">
+            <span class="ob-g-icon">🧕</span>
+            <span class="ob-g-label">امرأة</span>
+            <span class="ob-g-label-en">Female</span>
+          </button>
+        </div>
+      </div>
+      <button class="ob-start-btn" id="obStartBtn" disabled onclick="completeOnboarding()">
+        <span class="lang-ar">ابدأ العمرة 🕋</span>
+        <span class="lang-en"> Start Umrah</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- USER BADGE -->
+  <div class="user-badge" id="userBadge">
+    <div class="user-badge-inner">
+      <span class="ub-icon" id="ubIcon">🧔</span>
+      <span id="ubName">---</span>
+    </div>
+  </div>
+
+  <div class="restore-banner" id="restoreBanner">
+    <h3>يوجد تقدم محفوظ</h3>
+    <div class="restore-en">Previous Umrah session found</div>
+    <div class="restore-info" id="restoreInfo">---</div>
+    <div class="restore-btns">
+      <button class="restore-btn primary" onclick="restoreState()">↻ Restore | استعادة</button>
+      <button class="restore-btn secondary" onclick="freshStart()">✕ Start Fresh | بداية جديدة</button>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="header-ornament"></div>
+    <h1>دليل العمرة الشامل</h1>
+    <div class="subtitle">من الإحرام حتى الإحلال — دليلك الكامل أثناء أداء العمرة</div>
+    <div class="subtitle-en lang-en">Complete Umrah Guide — From Ihram to Completion</div>
+    <div class="mosque-icon">🕋</div>
+  </div>
+
+  <div class="start-umrah-wrap" id="startWrap">
+    <button class="start-umrah-btn" id="startBtn" onclick="startUmrah()">
+      <span>🕋</span>
+      <span class="lang-ar">ابدأ العمرة</span>
+      <span class="lang-en">Start Umrah</span>
+    </button>
+  </div>
+
+  <div class="umrah-timer" id="umrahTimer">
+    <div class="timer-card">
+      <div class="timer-label lang-ar">⏱️ الوقت المنقضي منذ بدء العمرة</div>
+      <div class="timer-label-en lang-en">Elapsed since Umrah started</div>
+      <div class="timer-elapsed" id="elapsedTime" aria-live="polite">00:00:00</div>
+      <div class="timer-paused-label" id="pausedLabel">⏸️ PAUSED | متوقف</div>
+      <div class="timer-started" id="startedAt">---</div>
+      <button class="pause-btn" id="pauseBtn" onclick="togglePause()">
+        <span id="pauseBtnText">⏸ Pause | إيقاف مؤقت</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span class="lang-ar">تقدمك في أداء العمرة</span>
+      <span id="progressPercent" aria-live="polite">0%</span>
+    </div>
+    <div class="progress-label-en lang-en">Your Umrah Progress</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-steps" id="progressDots"></div>
+  </div>
+
+  <div id="stepsContainer"></div>
+
+  <div class="activity-log-section" id="activityLogSection">
+    <div class="activity-log-header" onclick="document.getElementById('activityLogSection').classList.toggle('open')">
+      <h3>📋 سجل النشاط | Activity Log</h3>
+      <span class="log-count" id="logCount">0 entries</span>
+    </div>
+    <div class="activity-log-body">
+      <table class="log-table">
+        <thead><tr><th>#</th><th>Time</th><th>Type</th><th>Activity</th><th>Duration</th></tr></thead>
+        <tbody id="logTableBody"></tbody>
+      </table>
+      <div class="export-buttons">
+        <button class="export-btn" onclick="exportLog()">📥 Export .txt</button>
+        <button class="export-btn cloud" onclick="syncToCloud()">☁️ Sync to Google Sheets</button>
+        <button class="export-btn reset-btn" onclick="confirmReset()">🗑️ Reset All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="completed-banner" id="completedBanner">
+    <div class="big-icon">🤲</div>
+    <h2>تقبّل الله عمرتك</h2>
+    <div class="en-title lang-en">May Allah Accept Your Umrah</div>
+    <p>اللهم تقبّل منّا إنّك أنت السميع العليم<br>وتُب علينا إنّك أنت التوّاب الرحيم</p>
+    <div class="en-text lang-en">O Allah, accept from us. You are the All-Hearing, All-Knowing.</div>
+    <div class="total-duration" id="totalDuration"></div>
+  </div>
+
+  <div class="about-section">
+    <div class="about-icon">🤲</div>
+    <h3 class="lang-ar">عن هذا التطبيق</h3>
+    <div class="about-title-en lang-en">About This App</div>
+    
+    <p class="lang-ar">
+      تم تصميم هذا الدليل لتيسير رحلتك الإيمانية، ليكون رفيقاً لك يعمل بالكامل دون الحاجة للإنترنت.<br>
+      إن انتفعت بهذا العمل في عمرتك، فلا نرجو منك سوى دعوة صادقة بظهر الغيب للمطور وعائلته أمام الكعبة المشرفة بأن يغفر الله لنا ويرزقنا من فضله.
+    </p>
+    
+    <div class="heart-icon">✨</div>
+    
+    <p class="about-text-en lang-en">
+      This guide was created to assist you in your spiritual journey, keeping things simple, distraction-free, and completely offline.<br><br>
+      If this app helped you during your Umrah, all we humbly ask is that you remember the developer and their family in your sincere Du'as in front of the Ka'bah. 
+    </p>
+
+    <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(201,168,76,0.2);">
+      <p class="lang-ar" style="font-size: 0.85rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">نسعد باستقبال ملاحظاتكم أو اقتراحاتكم لتحسين التطبيق:</p>
+      <p class="about-text-en lang-en" style="font-size: 0.8rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">We welcome your feedback, reports, or suggestions to improve the app:</p>
+      <a href="mailto:myapps2026@hotmail.com" class="contact-btn">
+        <span>✉️</span> 
+        <span class="contact-text-ar lang-ar">تواصل معنا</span>
+        <span class="lang-en">Contact Us</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIG — Connected to your Google Apps Script Web App URL
+// ============================================================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsdMbrFBqrxuYoEURoIUsG2NdBAm0EA8mxKzxhc6fw0pC4rrcXbgje9nkv-8povTdW/exec';
+
+// ============================================================
+// WAKE LOCK API (Prevents screen from sleeping)
+// ============================================================
+let wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('Screen Wake Lock is active ✅');
+    }
+  } catch (err) {
+    console.warn(`Wake Lock error: ${err.name}, ${err.message}`);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock !== null) {
+    wakeLock.release().then(() => { 
+      wakeLock = null; 
+      console.log('Screen Wake Lock released 🔴'); 
+    });
+  }
+}
+
+// Re-request wake lock if user switches apps and comes back
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible' && umrahStartTime && !isPaused) {
+    await requestWakeLock();
+  }
+});
+
+// ============================================================
+// STEP DATA 
+// ============================================================
+const STEPS=[{title:"الإحرام",titleEn:"Ihram",subtitle:"الركن الأول — النية والتلبية",subtitleEn:"First Pillar — Intention & Talbiyah",sections:[{type:"text",title:"التعريف",titleEn:"Definition",icon:"📖",content:"الإحرام هو نية الدخول في النسك وهو ركن من أركان العمرة. يكون من الميقات المحدد حسب جهة القدوم.",contentEn:"Ihram is the intention to enter the state of ritual worship, beginning at the designated Miqat."},{type:"checklist",title:"سُنن ما قبل الإحرام",titleEn:"Recommended Acts Before Ihram",icon:"✨",items:[{ar:"الاغتسال والتنظّف وتقليم الأظافر",en:"Perform ghusl, clean yourself, trim nails"},{ar:"التطيّب في البدن قبل النية — للرجال فقط",en:"Apply perfume to body — men only",gender:"male"},{ar:"لبس إزار ورداء أبيضان نظيفان",en:"Wear two white unstitched Ihram cloths",gender:"male"},{ar:"لبس ملابس ساترة غير متبرجة",en:"Wear modest, non-revealing clothing",gender:"female"},{ar:"صلاة ركعتين سنة الإحرام",en:"Pray two rak'ahs of Sunnah"},{ar:"عقد النية والتلبية عند الميقات",en:"Make intention and Talbiyah at the Miqat"}]},{type:"dua",label:"التلبية الكاملة",labelEn:"The Full Talbiyah",arabic:"لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",translationEn:"Here I am O Allah. You have no partner. All praise, grace, and sovereignty belong to You."},{type:"dua",label:"دعاء السفر",labelEn:"Travel Supplication",arabic:"سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنقَلِبُونَ، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ",translationEn:"Glory be to Him who subjected this to us. O Allah, ease our travel and fold its distance."},{type:"warn",content:"⛔ محظورات الإحرام: لبس المخيط وتغطية الرأس والتطيّب وقص الشعر والأظافر والصيد وعقد النكاح والجماع.",contentEn:"⛔ Ihram prohibitions: stitched clothing (men), covering head (men), perfume, cutting hair/nails, hunting, marriage, intimacy.",gender:"male"},{type:"warn",content:"⛔ محظورات الإحرام للنساء: التطيّب وقص الشعر والأظافر والصيد وعقد النكاح والجماع ولبس النقاب والقفازين.",contentEn:"⛔ Ihram prohibitions for women: perfume, cutting hair/nails, hunting, marriage, intimacy, niqab and gloves. Modest clothing and head covering ARE allowed.",gender:"female"}]},{title:"دخول المسجد الحرام",titleEn:"Entering Al-Masjid Al-Haram",subtitle:"آداب الدخول والأدعية",subtitleEn:"Etiquettes & Supplications",sections:[{type:"dua",label:"دعاء دخول المسجد",labelEn:"Entering the mosque",arabic:"بِسْمِ اللَّهِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللَّهِ، اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",translationEn:"In the name of Allah, peace upon the Messenger. O Allah, open for me the gates of Your mercy."},{type:"dua",label:"دعاء رؤية الكعبة",labelEn:"Upon seeing the Ka'bah",arabic:"اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ فَحَيِّنَا رَبَّنَا بِالسَّلَامِ، اللَّهُمَّ زِدْ هَذَا الْبَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً",translationEn:"O Allah, You are Peace. Increase this House in honor and reverence."},{type:"dua",label:"دعاء العفو والعافية",labelEn:"Du'a for pardon",arabic:"اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي وَاحْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي",translationEn:"O Allah, I ask for pardon and well-being. Cover my faults, calm my fears, protect me from every direction."},{type:"note",content:"عند رؤية الكعبة لأول مرة — موضع عظيم للإجابة.",contentEn:"Upon first seeing the Ka'bah — a great moment for answered prayers."}]},{title:"الطواف",titleEn:"Tawaf",subtitle:"الركن الثاني — سبعة أشواط",subtitleEn:"Second Pillar — Seven circuits",sections:[{type:"text",title:"كيفية الطواف",titleEn:"How to Perform Tawaf",icon:"🕋",content:"سبعة أشواط حول الكعبة. يبدأ من الحجر الأسود. الكعبة عن يسارك. يُشترط الطهارة.",contentEn:"Seven circuits around the Ka'bah. Start at the Black Stone. Keep Ka'bah to your left. Purity required."},{type:"checklist",title:"سُنن الطواف",titleEn:"Recommended Acts",icon:"✨",items:[{ar:"الاضطباع: كشف الكتف الأيمن",en:"Idtiba': uncover right shoulder",gender:"male"},{ar:"الرَّمَل: الإسراع في الأشواط الثلاثة الأولى",en:"Raml: brisk walk in first 3 circuits",gender:"male"},{ar:"استلام الحجر الأسود أو الإشارة إليه مع التكبير",en:"Touch/kiss Black Stone or point with Takbir"},{ar:"الدعاء بين الركن اليماني والحجر الأسود",en:"Supplicate between Yemeni Corner and Black Stone"}]},{type:"dua",label:"عند الحجر الأسود",labelEn:"At the Black Stone",arabic:"بِسْمِ اللَّهِ، اللَّهُ أَكْبَرُ",translationEn:"In the name of Allah, Allah is the Greatest"},{type:"dua",label:"أدعية الطواف",labelEn:"Tawaf supplications",arabic:"سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",translationEn:"Glory, praise, no god but Allah, Allah is Greatest, no power except with Allah."},{type:"dua",label:"دعاء جامع",labelEn:"Comprehensive",arabic:"رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَعَافِنِي وَارْزُقْنِي",translationEn:"My Lord, forgive, have mercy, guide, grant well-being, and provide for me."},{type:"dua",label:"بين الركن اليماني والحجر الأسود",labelEn:"Between Yemeni Corner & Black Stone (confirmed Sunnah)",arabic:"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",translationEn:"Our Lord, give us good in this world and the Hereafter, protect us from the Fire."},{type:"counter",id:"tawaf",title:"عدّاد أشواط الطواف",titleEn:"Tawaf Counter",label:"شوط",labelEn:"circuit",max:7},{type:"dua",label:"بعد ركعتي الطواف وشرب زمزم",labelEn:"After 2 rak'ahs & Zamzam",arabic:"اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي، اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ",translationEn:"O Allah, You love to pardon, so pardon me. I ask for beneficial knowledge, abundant provision, and healing."}]},{title:"السعي",titleEn:"Sa'i",subtitle:"الركن الثالث — سبعة أشواط",subtitleEn:"Third Pillar — Seven laps",sections:[{type:"text",title:"كيفية السعي",titleEn:"How to Perform Sa'i",icon:"🏃",content:"سبعة أشواط بين الصفا والمروة. يبدأ من الصفا وينتهي بالمروة.",contentEn:"Seven laps between Safa and Marwah. Start at Safa, end at Marwah."},{type:"quran",label:"عند الصعود على الصفا",labelEn:"Upon ascending Safa (Quran 2:158)",arabic:"إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ ۖ فَمَنْ حَجَّ الْبَيْتَ أَوِ اعْتَمَرَ فَلَا جُنَاحَ عَلَيْهِ أَن يَطَّوَّفَ بِهِمَا ۚ وَمَن تَطَوَّعَ خَيْرًا فَإِنَّ اللَّهَ شَاكِرٌ عَلِيمٌ",translation:"سورة البقرة ١٥٨ — ثم: أبدأ بما بدأ الله به",translationEn:"Indeed, Safa and Marwah are among the symbols of Allah... Then say: I begin with what Allah began with."},{type:"dua",label:"الذكر على الصفا والمروة — ٣ مرات",labelEn:"Dhikr on Safa & Marwah — 3 times",arabic:"اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ\n\nلَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ\n\nلَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ أَنْجَزَ وَعْدَهُ وَنَصَرَ عَبْدَهُ وَهَزَمَ الْأَحْزَابَ وَحْدَهُ",translationEn:"Allah is the Greatest (×3). No god but Allah alone. His is sovereignty and praise. He gives life and death. He fulfilled His promise, supported His servant, defeated the confederates alone."},{type:"dua",label:"عند الهرولة",labelEn:"During brisk walk between green markers",arabic:"رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ الْأَعَزُّ الْأَكْرَمُ",translationEn:"My Lord, forgive and have mercy. You are the Most Mighty, Most Noble."},{type:"counter",id:"saei",title:"عدّاد أشواط السعي",titleEn:"Sa'i Counter",label:"شوط",labelEn:"lap",max:7}]},{title:"الحلق أو التقصير",titleEn:"Shaving / Trimming",subtitle:"واجب العمرة — الإحلال",subtitleEn:"Obligation — Exiting Ihram",sections:[{type:"text",title:"الحلق والتقصير",titleEn:"Shaving & Trimming",icon:"✂️",content:"يحلق الرجل أو يقصّر. الحلق أفضل.",contentEn:"Shave the entire head or trim. Shaving is preferred (the Prophet ﷺ supplicated 3 times for shavers, once for trimmers).",gender:"male"},{type:"text",title:"التقصير",titleEn:"Trimming",icon:"✂️",content:"تقصّ المرأة من أطراف شعرها قدر أنملة (طرف الإصبع). لا تحلق المرأة رأسها.",contentEn:"Trim a fingertip's length from the ends of your hair. Women never shave their heads.",gender:"female"},{type:"text",title:"الإحلال الكامل",titleEn:"Full Release",icon:"🎉",content:"تمّت العمرة بحمد الله! يحلّ لك كل محظورات الإحرام.",contentEn:"Your Umrah is complete! All Ihram prohibitions are lifted."},{type:"dua",label:"دعاء ختام العمرة",labelEn:"Du'a upon completion",arabic:"اللَّهُمَّ تَقَبَّلْ مِنِّي إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ\n\nاللَّهُمَّ لَا تَجْعَلْهُ آخِرَ الْعَهْدِ مِنْ بَيْتِكَ الْحَرَامِ",translationEn:"O Allah, accept from me. Do not make this my last visit to Your Sacred House."}]},{title:"أدعية عامة",titleEn:"General Supplications",subtitle:"أدعية جامعة في أي وقت",subtitleEn:"Anytime du'as",sections:[{type:"dua",label:"سيد الاستغفار",labelEn:"Master of Seeking Forgiveness",arabic:"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",translationEn:"O Allah, You are my Lord. You created me and I am Your servant. I abide by Your covenant. I seek refuge from the evil I've done. Forgive me, none forgives but You."},{type:"dua",label:"الصلاة الإبراهيمية",labelEn:"Abrahamic Prayer",arabic:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",translationEn:"O Allah, send grace upon Muhammad as upon Ibrahim. Bless Muhammad as You blessed Ibrahim. You are Praiseworthy, Glorious."},{type:"dua",label:"دعاء للوالدين",labelEn:"Du'a for parents",arabic:"رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا\n\nاللَّهُمَّ احْفَظْ أَهْلِي وَذُرِّيَّتِي وَبَارِكْ لِي فِيهِمْ",translationEn:"My Lord, have mercy on them as they raised me. O Allah, protect my family and bless me in them."}]}];
+
+// ============================================================
+// STATE
+// ============================================================
+let completedSteps = new Set();
+let counters = { tawaf: 0, saei: 0 };
+let counterLogs = { tawaf: [], saei: [] };
+let umrahStartTime = null;
+let elapsedInterval = null;
+let activityLog = [];
+let currentLang = 'both';
+let checkedItems = {};
+let userName = '';
+let userGender = '';
+let isPaused = false;
+let totalPausedMs = 0;
+let pauseStartTime = null;
+const SESSION_ID = 'umrah-' + Date.now().toString(36);
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+let selectedGender = '';
+
+window.selectGender = function(g, el) {
+  selectedGender = g;
+  document.querySelectorAll('.ob-gender-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  checkOnboardReady();
+};
+
+document.getElementById('obName').addEventListener('input', checkOnboardReady);
+
+function checkOnboardReady() {
+  const name = document.getElementById('obName').value.trim();
+  document.getElementById('obStartBtn').disabled = !(name && selectedGender);
+}
+
+window.completeOnboarding = function() {
+  userName = document.getElementById('obName').value.trim();
+  userGender = selectedGender;
+  if (!userName || !userGender) return;
+
+  haptic(100);
+  document.getElementById('onboardOverlay').classList.remove('show');
+
+  // Apply gender class to body
+  document.body.classList.add('user-' + userGender);
+
+  // Show user badge
+  document.getElementById('ubName').textContent = userName;
+  document.getElementById('ubIcon').textContent = userGender === 'male' ? '🧔' : '🧕';
+  document.getElementById('userBadge').classList.add('show');
+
+  // Start Umrah
+  umrahStartTime = now();
+  applyStartedUI();
+  addLog('start', 'start', `${userName} (${userGender}) — Umrah Started | بدأت العمرة`);
+
+  // Activate Wake Lock
+  requestWakeLock();
+
+  // Re-render to apply gender filtering
+  applyGenderFilter();
+  setLang(currentLang);
+};
+
+function applyGenderFilter() {
+  document.querySelectorAll('[data-gender]').forEach(el => {
+    const g = el.dataset.gender;
+    if (g && g !== userGender && userGender) {
+      el.style.display = 'none';
+    } else {
+      el.style.display = '';
+    }
+  });
+}
+
+// ============================================================
+// PAUSE / RESUME
+// ============================================================
+window.togglePause = function() {
+  if (!umrahStartTime) return;
+  haptic(60);
+
+  if (isPaused) {
+    // Resume
+    const pausedDuration = now() - pauseStartTime;
+    totalPausedMs += pausedDuration;
+    pauseStartTime = null;
+    isPaused = false;
+    document.getElementById('pauseBtnText').textContent = '⏸ Pause | إيقاف مؤقت';
+    document.getElementById('pauseBtn').classList.remove('paused');
+    document.getElementById('pausedLabel').classList.remove('show');
+    addLog('step', 'start', `Resumed — استئناف (paused for ${fmtDuration(pausedDuration)})`);
+    
+    // Restart elapsed timer
+    elapsedInterval = setInterval(() => {
+      document.getElementById('elapsedTime').textContent = getActiveTime();
+    }, 1000);
+    
+    // Resume wake lock
+    requestWakeLock();
+  } else {
+    // Pause
+    pauseStartTime = now();
+    isPaused = true;
+    document.getElementById('pauseBtnText').textContent = '▶ Resume | استئناف';
+    document.getElementById('pauseBtn').classList.add('paused');
+    document.getElementById('pausedLabel').classList.add('show');
+    addLog('step', 'complete', 'Paused — إيقاف مؤقت (e.g. Salah)');
+    
+    if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
+    
+    // Release wake lock to save battery
+    releaseWakeLock();
+  }
+  saveState();
+};
+
+function getActiveTime() {
+  if (!umrahStartTime) return '--';
+  const total = now() - umrahStartTime;
+  const currentPause = isPaused && pauseStartTime ? (now() - pauseStartTime) : 0;
+  return fmtDuration(total - totalPausedMs - currentPause);
+}
+
+function sinceStart() { return getActiveTime(); }
+
+// ============================================================
+// HAPTIC FEEDBACK
+// ============================================================
+function haptic(ms = 50) {
+  try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e) {}
+}
+
+// ============================================================
+// LOCALSTORAGE PERSISTENCE
+// ============================================================
+const STORAGE_KEY = 'umrah_guide_state';
+
+function saveState() {
+  try {
+    const state = {
+      completedSteps: Array.from(completedSteps),
+      counters,
+      counterLogs: {
+        tawaf: counterLogs.tawaf.map(l => ({ ...l, time: l.time.toISOString() })),
+        saei: counterLogs.saei.map(l => ({ ...l, time: l.time.toISOString() }))
+      },
+      umrahStartTime: umrahStartTime ? umrahStartTime.toISOString() : null,
+      activityLog,
+      checkedItems,
+      currentLang,
+      userName,
+      userGender,
+      isPaused,
+      totalPausedMs,
+      pauseStartTime: pauseStartTime ? pauseStartTime.toISOString() : null,
+      sessionId: SESSION_ID,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) { console.warn('Could not save state:', e); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function clearState() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function now() { return new Date(); }
+function fmtTime(d) { return d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}); }
+function fmtDate(d) { return d.toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'}); }
+function fmtDateTime(d) { return fmtDate(d)+' '+fmtTime(d); }
+function fmtDuration(ms) { const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
+
+// ============================================================
+// LIVE CLOCK
+// ============================================================
+function updateClock() { const n=now(); document.getElementById('liveClock').textContent=fmtTime(n); document.getElementById('liveDate').textContent=fmtDate(n); }
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// OFFLINE DETECTION
+// ============================================================
+window.addEventListener('offline', () => document.getElementById('offlineBar').classList.add('show'));
+window.addEventListener('online', () => {
+  document.getElementById('offlineBar').classList.remove('show');
+  const bar = document.getElementById('onlineBar');
+  bar.style.display = 'block';
+  setTimeout(() => bar.style.display = 'none', 3000);
+});
+
+// ============================================================
+// PWA INSTALL PROMPT
+// ============================================================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installPrompt').classList.add('show');
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('installPrompt').classList.remove('show');
+  }
+});
+
+// ============================================================
+// ACTIVITY LOG
+// ============================================================
+function addLog(type, tag, activity) {
+  const t = now();
+  const dur = umrahStartTime ? fmtDuration(t-umrahStartTime) : '00:00:00';
+  activityLog.push({ time: fmtTime(t), date: fmtDate(t), type: tag, activity, duration: dur, raw: t.toISOString() });
+  renderLog();
+  saveState();
+}
+
+function renderLog() {
+  const tbody = document.getElementById('logTableBody');
+  tbody.innerHTML = '';
+  activityLog.forEach((l,i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${l.time}</td><td><span class="log-tag ${l.type}">${l.type}</span></td><td>${l.activity}</td><td>${l.duration}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('logCount').textContent = activityLog.length + ' entries';
+}
+
+function exportLog() {
+  let text = '=== UMRAH ACTIVITY LOG ===\n';
+  if (userName) text += 'Name: '+userName+' ('+userGender+')\n';
+  if (umrahStartTime) text += 'Started: '+fmtDateTime(umrahStartTime)+'\n';
+  if (totalPausedMs > 0) text += 'Total Paused: '+fmtDuration(totalPausedMs)+'\n';
+  text += 'Exported: '+fmtDateTime(now())+'\n\n';
+  text += '#\tTime\tType\tActivity\tElapsed\n'+'─'.repeat(60)+'\n';
+  activityLog.forEach((l,i) => { text += `${i+1}\t${l.time}\t${l.type}\t${l.activity}\t${l.duration}\n`; });
+  if (completedSteps.size===STEPS.length) text += '\n✅ UMRAH COMPLETED — Total: '+sinceStart()+'\n';
+  text += '\nعمرة مبرورة وذنب مغفور\n';
+  const blob = new Blob([text],{type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'umrah-log-'+now().toISOString().slice(0,10)+'.txt';
+  a.click();
+  haptic(100);
+}
+
+// ============================================================
+// GOOGLE SHEETS SYNC
+// ============================================================
+async function syncToCloud() {
+  if (!GOOGLE_SCRIPT_URL) {
+    alert('Google Sheets URL not configured.\n\nSet GOOGLE_SCRIPT_URL in the script section of index.html.\n\nSee google-apps-script.js for setup instructions.');
+    return;
+  }
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.className = 'sync-status syncing';
+  syncEl.textContent = '☁️ Syncing...';
+
+  try {
+    const payload = {
+      sessionId: SESSION_ID,
+      userName: userName,
+      userGender: userGender,
+      umrahStarted: umrahStartTime ? fmtDateTime(umrahStartTime) : 'N/A',
+      totalDuration: sinceStart(),
+      totalPausedTime: fmtDuration(totalPausedMs),
+      deviceInfo: navigator.userAgent.slice(0,100),
+      logs: activityLog
+    };
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      syncEl.className = 'sync-status synced';
+      syncEl.textContent = '✅ Synced to Google Sheets';
+      haptic(100);
+    } else {
+      throw new Error(data.message);
+    }
+  } catch(e) {
+    syncEl.className = 'sync-status error';
+    syncEl.textContent = '❌ Sync failed';
+    console.error('Cloud sync error:', e);
+  }
+  setTimeout(() => syncEl.style.display = 'none', 4000);
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function confirmReset() {
+  if (confirm('⚠️ This will permanently delete all Umrah progress and logs.\n\nAre you sure?')) {
+    clearState();
+    location.reload();
+  }
+}
+
+// ============================================================
+// START UMRAH
+// ============================================================
+window.startUmrah = function() {
+  if (umrahStartTime) return;
+  // Show onboarding modal
+  document.getElementById('onboardOverlay').classList.add('show');
+  document.getElementById('obName').focus();
+};
+
+function applyStartedUI() {
+  const btn = document.getElementById('startBtn');
+  btn.classList.add('started');
+  btn.innerHTML = '<span>✅</span> <span class="lang-ar">بدأت العمرة</span> <span class="lang-en">Umrah Started</span>';
+  document.getElementById('umrahTimer').classList.add('active');
+  document.getElementById('startedAt').textContent = 'Started: '+fmtDateTime(umrahStartTime);
+  if (elapsedInterval) clearInterval(elapsedInterval);
+  elapsedInterval = setInterval(() => {
+    document.getElementById('elapsedTime').textContent = getActiveTime();
+  }, 1000);
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+const dotsC = document.getElementById('progressDots');
+STEPS.forEach((_,i) => {
+  const dot = document.createElement('div');
+  dot.className = 'progress-dot';
+  dot.textContent = i+1;
+  dot.onclick = () => document.querySelectorAll('.step-card')[i].scrollIntoView({behavior:'smooth',block:'start'});
+  dotsC.appendChild(dot);
+});
+
+function updateProgress() {
+  const pct = Math.round((completedSteps.size/STEPS.length)*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPercent').textContent = pct+'%';
+  document.querySelectorAll('.progress-dot').forEach((d,i) => d.classList.toggle('completed', completedSteps.has(i)));
+  const banner = document.getElementById('completedBanner');
+  
+  if (completedSteps.size === STEPS.length) {
+    banner.classList.add('show');
+    document.getElementById('totalDuration').textContent = '⏱️ Total: '+sinceStart();
+    if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval=null; }
+    
+    releaseWakeLock(); // Release lock since Umrah is finished
+
+    // Auto-sync on completion
+    if (GOOGLE_SCRIPT_URL) setTimeout(syncToCloud, 1000);
+  } else {
+    banner.classList.remove('show');
+  }
+  saveState();
+}
+
+// ============================================================
+// LANGUAGE AND ACCESSIBILITY (Document Lang Tag)
+// ============================================================
+window.setLang = function(lang, btn) {
+  currentLang = lang;
+  
+  // Highlight active button
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelectorAll('.lang-btn').forEach(b => { 
+      if (b.textContent.includes(lang==='both'?'ثنائي':lang==='ar'?'عربي':'EN')) b.classList.add('active'); 
+  });
+  
+  // Hide/show classes
+  document.querySelectorAll('.lang-en').forEach(el => el.style.display = (lang==='ar')?'none':'');
+  document.querySelectorAll('.lang-ar').forEach(el => el.style.display = (lang==='en')?'none':'');
+  
+  // ACCESSIBILITY FIX: Update actual HTML lang and dir attributes for Screen Readers
+  document.documentElement.lang = lang === 'en' ? 'en' : 'ar';
+  document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+
+  saveState();
+};
+
+// ============================================================
+// COUNTERS
+// ============================================================
+window.changeCount = function(id, delta, max) {
+  const prev = counters[id];
+  counters[id] = Math.max(0, Math.min(max, counters[id]+delta));
+  if (counters[id]===prev) return;
+  haptic(50); // HAPTIC FEEDBACK
+  
+  // Update visually
+  document.getElementById(`count-${id}`).textContent = counters[id];
+  document.getElementById(`countLabel-${id}`).textContent = counters[id];
+  document.getElementById(`rounds-${id}`).querySelectorAll('.round-dot').forEach((d,i) => d.classList.toggle('filled', i<counters[id]));
+  
+  const t = now();
+  const label = id==='tawaf'?'Tawaf':"Sa'i";
+  if (delta > 0) {
+    const prevTime = counterLogs[id].length>0 ? counterLogs[id][counterLogs[id].length-1].time : umrahStartTime;
+    const lapDur = prevTime ? fmtDuration(t-prevTime) : '--';
+    counterLogs[id].push({round:counters[id],time:t,lapDur});
+    addLog('round','round',`${label} — Round ${counters[id]}/${max} (lap: ${lapDur})`);
+    renderRoundLog(id);
+  }
+  saveState();
+};
+
+window.resetCount = function(id) {
+  counters[id]=0; counterLogs[id]=[];
+  document.getElementById(`count-${id}`).textContent=0;
+  document.getElementById(`countLabel-${id}`).textContent=0;
+  document.getElementById(`rounds-${id}`).querySelectorAll('.round-dot').forEach(d => d.classList.remove('filled'));
+  renderRoundLog(id);
+  haptic(100);
+  saveState();
+};
+
+function renderRoundLog(id) {
+  const c = document.getElementById(`roundlog-${id}`);
+  if (!c) return;
+  c.innerHTML='';
+  counterLogs[id].forEach(l => {
+    const div = document.createElement('div');
+    div.className='round-log-item';
+    div.innerHTML=`<span class="rnd-num">Round ${l.round}</span><span class="rnd-time">${fmtTime(l.time)}</span><span class="rnd-dur">${l.lapDur}</span>`;
+    c.appendChild(div);
+  });
+}
+
+// ============================================================
+// RENDER STEPS
+// ============================================================
+const stepsContainer = document.getElementById('stepsContainer');
+STEPS.forEach((step,idx) => {
+  const card = document.createElement('div');
+  card.className = 'step-card';
+  const header = document.createElement('div');
+  header.className='step-header';
+  header.innerHTML=`<div class="step-number">${idx+1}</div><div class="step-title-wrap"><div class="step-title lang-ar">${step.title}</div><div class="step-title-en lang-en">${step.titleEn}</div><div class="step-subtitle lang-ar">${step.subtitle}</div><div class="step-subtitle-en lang-en">${step.subtitleEn}</div></div><div class="step-toggle" aria-hidden="true">▼</div>`;
+  header.onclick = () => card.classList.toggle('open');
+  const body = document.createElement('div');
+  body.className='step-body';
+  const content = document.createElement('div');
+  content.className='step-content';
+
+  step.sections.forEach(sec => {
+    // Gender filtering: add data-gender attribute if section has gender tag
+    const genderAttr = sec.gender ? ` data-gender="${sec.gender}"` : '';
+
+    if (sec.type==='text') {
+      const b=document.createElement('div'); b.className='section-block';
+      if (sec.gender) b.dataset.gender = sec.gender;
+      const gTag = sec.gender === 'male' ? '<span class="gender-tag men-only">MEN</span>' : sec.gender === 'female' ? '<span class="gender-tag women-only">WOMEN</span>' : '';
+      b.innerHTML=`<div class="section-title lang-ar"><span class="icon">${sec.icon||''}</span> ${gTag}${sec.title}</div>${sec.titleEn?`<div class="section-title-en lang-en">${sec.icon||''} ${gTag}${sec.titleEn}</div>`:''}<div class="text-block lang-ar">${sec.content}</div>${sec.contentEn?`<div class="text-block-en lang-en">${sec.contentEn}</div>`:''}`;
+      content.appendChild(b);
+    } else if (sec.type==='dua'||sec.type==='quran') {
+      const b=document.createElement('div'); b.className=sec.type==='quran'?'quran-box':'dua-box';
+      if (sec.gender) b.dataset.gender = sec.gender;
+      const icon=sec.type==='quran'?'📖':'🤲';
+      b.innerHTML=`${sec.label?`<div class="dua-label lang-ar">${icon} ${sec.label}</div>`:''}${sec.labelEn?`<div class="dua-label-en lang-en">${icon} ${sec.labelEn}</div>`:''}<div class="dua-arabic" dir="rtl">${sec.arabic.replace(/\n/g,'<br>')}</div>${sec.translation?`<div class="dua-separator"></div><div class="dua-translation lang-ar">${sec.translation}</div>`:''}${sec.translationEn?`<div class="dua-translation-en lang-en">${sec.translationEn}</div>`:''}`;
+      content.appendChild(b);
+    } else if (sec.type==='note') {
+      const b=document.createElement('div'); b.className='note-box';
+      if (sec.gender) b.dataset.gender = sec.gender;
+      b.innerHTML=`<div class="lang-ar">💡 ${sec.content}</div>${sec.contentEn?`<div class="note-en lang-en">💡 ${sec.contentEn}</div>`:''}`;
+      content.appendChild(b);
+    } else if (sec.type==='warn') {
+      const b=document.createElement('div'); b.className='warn-box';
+      if (sec.gender) b.dataset.gender = sec.gender;
+      b.innerHTML=`<div class="lang-ar">${sec.content}</div>${sec.contentEn?`<div class="warn-en lang-en">${sec.contentEn}</div>`:''}`;
+      content.appendChild(b);
+    } else if (sec.type==='checklist') {
+      const b=document.createElement('div'); b.className='section-block';
+      b.innerHTML=`<div class="section-title lang-ar"><span class="icon">${sec.icon||''}</span> ${sec.title}</div>${sec.titleEn?`<div class="section-title-en lang-en">${sec.icon||''} ${sec.titleEn}</div>`:''}`;
+      sec.items.forEach((item,ci) => {
+        const el=document.createElement('div'); el.className='check-item';
+        const isObj=typeof item==='object';
+        const checkId=`check-${idx}-${ci}`;
+        if (isObj && item.gender) el.dataset.gender = item.gender;
+        const gTag = isObj && item.gender === 'male' ? '<span class="gender-tag men-only">MEN</span> ' : isObj && item.gender === 'female' ? '<span class="gender-tag women-only">WOMEN</span> ' : '';
+        el.innerHTML=`<div class="check-box"></div><div style="flex:1"><div class="check-text lang-ar">${gTag}${isObj?item.ar:item}</div>${isObj&&item.en?`<span class="check-text-en lang-en">${gTag}${item.en}</span>`:''}<div class="timestamp-badge" id="ts-${checkId}"></div></div>`;
+        el.onclick = () => {
+          haptic(30);
+          const was=el.classList.contains('checked');
+          el.classList.toggle('checked');
+          const ts=document.getElementById(`ts-${checkId}`);
+          if (!was) {
+            const t=now();
+            ts.textContent='✓ '+fmtTime(t)+' | +'+sinceStart();
+            ts.classList.add('visible');
+            checkedItems[checkId]={ time: t.toISOString(), text: fmtTime(t)+' | +'+sinceStart() };
+            addLog('check','check',(isObj?item.en:item));
+          } else {
+            ts.classList.remove('visible');
+            delete checkedItems[checkId];
+            saveState();
+          }
+        };
+        b.appendChild(el);
+      });
+      content.appendChild(b);
+    } else if (sec.type==='counter') {
+      const w=document.createElement('div'); w.className='counter-wrap';
+      w.innerHTML=`<div class="counter-title lang-ar">${sec.title}</div><div class="counter-title-en lang-en">${sec.titleEn}</div><div class="counter-display" id="count-${sec.id}" aria-live="polite">0</div><div class="counter-label"><span id="countLabel-${sec.id}">0</span> / ${sec.max} <span class="lang-ar">${sec.label}</span><span class="lang-en">${sec.labelEn}</span></div><div class="counter-rounds" id="rounds-${sec.id}">${'<div class="round-dot"></div>'.repeat(sec.max)}</div><div class="counter-buttons"><button class="counter-btn" aria-label="Increase ${sec.titleEn}" onclick="changeCount('${sec.id}',1,${sec.max})">+</button><button class="counter-btn" aria-label="Decrease" onclick="changeCount('${sec.id}',-1,${sec.max})">−</button><button class="counter-btn reset" onclick="resetCount('${sec.id}')">Reset</button></div><div class="round-log" id="roundlog-${sec.id}"></div>`;
+      content.appendChild(w);
+    }
+  });
+
+  const btn=document.createElement('button'); btn.className='complete-btn'; btn.dataset.idx=idx;
+  btn.innerHTML='<span class="lang-ar">تم الانتهاء من هذه الخطوة ✓</span> <span class="lang-en">Mark as Complete ✓</span>';
+  btn.onclick = () => {
+    haptic(80);
+    if (completedSteps.has(idx)) {
+      completedSteps.delete(idx);
+      btn.innerHTML='<span class="lang-ar">تم الانتهاء من هذه الخطوة ✓</span> <span class="lang-en">Mark as Complete ✓</span>';
+      btn.classList.remove('done');
+    } else {
+      completedSteps.add(idx);
+      btn.innerHTML='<span class="lang-ar">✓ تم بحمد الله</span> <span class="lang-en">✓ Completed</span>';
+      btn.classList.add('done');
+      addLog('step','complete',`Step ${idx+1}: ${step.titleEn}`);
+    }
+    setLang(currentLang);
+    updateProgress();
+  };
+  content.appendChild(btn);
+  body.appendChild(content);
+  card.appendChild(header);
+  card.appendChild(body);
+  stepsContainer.appendChild(card);
+  setTimeout(() => card.classList.add('visible'), 120*(idx+1));
+});
+
+document.querySelectorAll('.step-card')[0].classList.add('open');
+
+// ============================================================
+// RESTORE / FRESH START
+// ============================================================
+function restoreState() {
+  const saved = loadState();
+  if (!saved) return;
+
+  // Restore user info
+  userName = saved.userName || '';
+  userGender = saved.userGender || '';
+  if (userGender) {
+    document.body.classList.add('user-' + userGender);
+    document.getElementById('ubName').textContent = userName;
+    document.getElementById('ubIcon').textContent = userGender === 'male' ? '🧔' : '🧕';
+    document.getElementById('userBadge').classList.add('show');
+    applyGenderFilter();
+  }
+
+  // Restore pause state
+  totalPausedMs = saved.totalPausedMs || 0;
+  isPaused = saved.isPaused || false;
+  if (saved.pauseStartTime) pauseStartTime = new Date(saved.pauseStartTime);
+
+  // Restore completed steps
+  completedSteps = new Set(saved.completedSteps || []);
+  document.querySelectorAll('.complete-btn').forEach(btn => {
+    const idx = parseInt(btn.dataset.idx);
+    if (completedSteps.has(idx)) {
+      btn.innerHTML='<span class="lang-ar">✓ تم بحمد الله</span> <span class="lang-en">✓ Completed</span>';
+      btn.classList.add('done');
+    }
+  });
+
+  // Restore counters
+  counters = saved.counters || { tawaf:0, saei:0 };
+  ['tawaf','saei'].forEach(id => {
+    document.getElementById(`count-${id}`).textContent = counters[id];
+    document.getElementById(`countLabel-${id}`).textContent = counters[id];
+    document.getElementById(`rounds-${id}`).querySelectorAll('.round-dot').forEach((d,i) => d.classList.toggle('filled', i<counters[id]));
+    if (saved.counterLogs && saved.counterLogs[id]) {
+      counterLogs[id] = saved.counterLogs[id].map(l => ({ ...l, time: new Date(l.time) }));
+      renderRoundLog(id);
+    }
+  });
+
+  // Restore start time
+  if (saved.umrahStartTime) {
+    umrahStartTime = new Date(saved.umrahStartTime);
+    applyStartedUI();
+    
+    // Resume Wake Lock if app was restored while running
+    if (!isPaused) requestWakeLock();
+
+    // If was paused, show paused UI
+    if (isPaused) {
+      document.getElementById('pauseBtnText').textContent = '▶ Resume | استئناف';
+      document.getElementById('pauseBtn').classList.add('paused');
+      document.getElementById('pausedLabel').classList.add('show');
+      if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
+    }
+  }
+
+  // Restore activity log
+  activityLog = saved.activityLog || [];
+  renderLog();
+
+  // Restore checked items
+  checkedItems = saved.checkedItems || {};
+  Object.keys(checkedItems).forEach(checkId => {
+    const el = document.getElementById(`ts-${checkId}`);
+    if (el) {
+      el.textContent = '✓ ' + checkedItems[checkId].text;
+      el.classList.add('visible');
+      el.closest('.check-item')?.classList.add('checked');
+    }
+  });
+
+  // Restore language
+  if (saved.currentLang) setLang(saved.currentLang);
+
+  updateProgress();
+  document.getElementById('restoreBanner').classList.remove('show');
+}
+
+function freshStart() {
+  clearState();
+  document.getElementById('restoreBanner').classList.remove('show');
+}
+
+// ============================================================
+// INIT — Check for saved state
+// ============================================================
+(function init() {
+  const saved = loadState();
+  if (saved && saved.umrahStartTime) {
+    const startDate = new Date(saved.umrahStartTime);
+    const name = saved.userName ? saved.userName + ' — ' : '';
+    const info = `${name}Started: ${fmtDateTime(startDate)} | ${(saved.activityLog||[]).length} log entries | ${(saved.completedSteps||[]).length}/${STEPS.length} steps`;
+    document.getElementById('restoreInfo').textContent = info;
+    document.getElementById('restoreBanner').classList.add('show');
+  }
+  updateProgress();
+})();
+
+// ============================================================
+// SERVICE WORKER REGISTRATION
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+      .catch(err => console.log('[PWA] SW registration failed (normal in dev):', err));
+  });
+}
+</script>
+</body>
+</html>
