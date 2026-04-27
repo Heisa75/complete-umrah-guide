@@ -497,9 +497,12 @@
   .about-section .about-text-en { font-family: var(--en-font); font-size: 0.85rem; direction: ltr; color: rgba(255,255,255,0.85); line-height: 1.7; margin-bottom: 0; }
   .about-section .heart-icon { color: var(--gold); font-size: 1.2rem; display: block; margin: 16px auto; }
 
-  .contact-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 10px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.3); border-radius: 12px; color: var(--gold-light); font-family: var(--en-font); font-size: 0.9rem; text-decoration: none; transition: all 0.3s; }
+  .contact-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.3); border-radius: 12px; color: var(--gold-light); font-family: var(--en-font); font-size: 0.9rem; text-decoration: none; transition: all 0.3s; cursor: pointer; }
   .contact-btn:hover { background: rgba(201,168,76,0.2); color: var(--white); }
   .contact-btn .contact-text-ar { font-family: var(--ar-font); }
+  
+  .share-btn { background: rgba(82, 183, 136, 0.15); border-color: rgba(82, 183, 136, 0.4); color: var(--green-light); }
+  .share-btn:hover { background: var(--green-light); color: var(--white); }
 
   @keyframes fadeDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
@@ -678,13 +681,21 @@
     </p>
 
     <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(201,168,76,0.2);">
-      <p class="lang-ar" style="font-size: 0.85rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">نسعد باستقبال ملاحظاتكم أو اقتراحاتكم لتحسين التطبيق:</p>
-      <p class="about-text-en lang-en" style="font-size: 0.8rem; margin-bottom: 10px; color: rgba(255,255,255,0.8);">We welcome your feedback, reports, or suggestions to improve the app:</p>
-      <a href="mailto:myapps2026@hotmail.com" class="contact-btn">
-        <span>✉️</span> 
-        <span class="contact-text-ar lang-ar">تواصل معنا</span>
-        <span class="lang-en">Contact Us</span>
-      </a>
+      <p class="lang-ar" style="font-size: 0.85rem; margin-bottom: 12px; color: rgba(255,255,255,0.8);">نسعد باستقبال ملاحظاتكم أو مشاركتكم للتطبيق:</p>
+      <p class="about-text-en lang-en" style="font-size: 0.8rem; margin-bottom: 12px; color: rgba(255,255,255,0.8);">We welcome your feedback or sharing the app with others:</p>
+      
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <a href="mailto:myapps2026@hotmail.com" class="contact-btn">
+          <span>✉️</span> 
+          <span class="contact-text-ar lang-ar">تواصل معنا</span>
+          <span class="lang-en">Contact Us</span>
+        </a>
+        <button onclick="shareApp()" class="contact-btn share-btn">
+          <span>📤</span>
+          <span class="contact-text-ar lang-ar">شارك التطبيق</span>
+          <span class="lang-en">Share App</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1038,6 +1049,39 @@ async function syncToCloud() {
   }
   setTimeout(() => syncEl.style.display = 'none', 4000);
 }
+
+// ============================================================
+// SHARE APP
+// ============================================================
+window.shareApp = function() {
+  haptic(50);
+  const shareUrl = window.location.href.split('#')[0]; // Clean URL
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'دليل العمرة | Umrah Guide',
+      text: 'Check out this free, offline Umrah Guide app! دليل العمرة الشامل يعمل بدون إنترنت:',
+      url: shareUrl
+    }).catch(e => console.log('Share canceled'));
+  } else {
+    // Fallback if browser doesn't support native sharing (copies link)
+    const textArea = document.createElement("textarea");
+    textArea.value = shareUrl;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      const syncEl = document.getElementById('syncStatus');
+      syncEl.className = 'sync-status synced';
+      syncEl.textContent = currentLang === 'en' ? '✅ Link copied to clipboard!' : '✅ تم نسخ الرابط!';
+      syncEl.style.display = 'block';
+      setTimeout(() => syncEl.style.display = 'none', 3000);
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
+    document.body.removeChild(textArea);
+  }
+};
 
 // ============================================================
 // RESET
