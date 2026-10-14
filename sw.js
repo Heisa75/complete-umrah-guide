@@ -1,76 +1,47 @@
-// Service Worker for Umrah Guide PWA
-// Version: 1.0.0
+// Umrah Guide service worker
+// Bump CACHE_VERSION whenever index.html or other assets change.
+const CACHE_VERSION = 'umrah-guide-v2-2026-10-14';
+const CORE = ['./', './index.html', './manifest.json'];
 
-const CACHE_NAME = 'umrah-guide-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Outfit:wght@300;400;500;600;700&display=swap'
-];
-
-// Install — cache all critical assets
-self.addEventListener('install', (event) => {
-  console.log('[SW] Installing Umrah Guide Service Worker...');
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching app shell and assets');
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
-  // Activate immediately
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_VERSION).then(cache => cache.addAll(CORE)));
   self.skipWaiting();
 });
 
-// Activate — clean up old caches
-self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating Service Worker...');
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
-            return caches.delete(name);
-          })
-      );
-    })
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_VERSION).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  // Take control of all pages immediately
-  self.clients.claim();
 });
 
-// Fetch — serve from cache first, fallback to network
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Serve from cache
-        return cachedResponse;
-      }
+self.addEventListener('fetch', event => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
-      // Not in cache — fetch from network
-      return fetch(event.request).then((networkResponse) => {
-        // Cache successful GET responses for fonts and assets
-        if (
-          event.request.method === 'GET' &&
-          networkResponse.status === 200 &&
-          (event.request.url.startsWith('https://fonts.') ||
-           event.request.url.includes('googleapis'))
-        ) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      }).catch(() => {
-        // Network failed and not in cache — return offline fallback for HTML
-        if (event.request.headers.get('accept').includes('text/html')) {
-          return caches.match('/index.html');
-        }
-      });
-    })
+  // Pages: network first so content fixes reach users; cached copy when offline.
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE_VERSION).then(c => c.put('./index.html', copy));
+          return res;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Everything else (icons, Google Fonts): cache first, then network, and keep a copy.
+  event.respondWith(
+    caches.match(req).then(hit => hit || fetch(req).then(res => {
+      if (res.ok || res.type === 'opaque') {
+        const copy = res.clone();
+        caches.open(CACHE_VERSION).then(c => c.put(req, copy));
+      }
+      return res;
+    }))
   );
 });
