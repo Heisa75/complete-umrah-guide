@@ -1,6 +1,6 @@
 // Umrah Guide service worker
 // Bump CACHE_VERSION whenever index.html or other assets change.
-const CACHE_VERSION = 'umrah-guide-v2-2026-10-14';
+const CACHE_VERSION = 'umrah-guide-v3-2026-10-14';
 const CORE = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', event => {

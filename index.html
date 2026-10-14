@@ -23,6 +23,7 @@
     --text-primary: #2C1810;
     --text-secondary: #5C4033;
     --white: #FFFFFF;
+    --surface: #FFFFFF;
     --shadow: 0 4px 24px rgba(27,67,50,0.12);
     --en-font: 'Outfit', sans-serif;
     --ar-font: 'Noto Naskh Arabic', 'Amiri', serif;
@@ -51,7 +52,7 @@
   .offline-bar.show { display: block; }
   .online-restored { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 300; background: var(--green-mid); color: white; text-align: center; padding: 6px; font-family: var(--en-font); font-size: 0.75rem; font-weight: 600; animation: fadeDown 0.3s ease; }
 
-  .install-prompt { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 250; background: var(--white); border-radius: 14px; padding: 16px 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.15); border: 1px solid rgba(201,168,76,0.2); align-items: center; gap: 12px; max-width: 360px; width: 90%; animation: fadeUp 0.5s ease; }
+  .install-prompt { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 250; background: var(--surface); border-radius: 14px; padding: 16px 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.15); border: 1px solid rgba(201,168,76,0.2); align-items: center; gap: 12px; max-width: 360px; width: 90%; animation: fadeUp 0.5s ease; }
   .install-prompt.show { display: flex; }
   .install-prompt .install-icon { font-size: 1.5rem; }
   .install-prompt .install-text { flex: 1; }
@@ -60,16 +61,16 @@
   .install-btn { padding: 8px 16px; background: var(--green-deep); color: white; border: none; border-radius: 8px; font-family: var(--en-font); font-size: 0.75rem; font-weight: 700; cursor: pointer; }
   .install-dismiss { position: absolute; top: 6px; right: 8px; background: none; border: none; color: var(--text-secondary); font-size: 1rem; cursor: pointer; }
 
-  .sync-status { display: none; position: fixed; top: 60px; right: 14px; z-index: 200; background: var(--white); border-radius: 8px; padding: 6px 12px; box-shadow: var(--shadow); font-family: var(--en-font); font-size: 0.65rem; font-weight: 600; direction: ltr; animation: fadeDown 0.3s ease; }
+  .sync-status { display: none; position: fixed; top: 60px; right: 14px; z-index: 200; background: var(--surface); border-radius: 8px; padding: 6px 12px; box-shadow: var(--shadow); font-family: var(--en-font); font-size: 0.65rem; font-weight: 600; direction: ltr; animation: fadeDown 0.3s ease; }
   .sync-status.syncing { display: block; color: #3498DB; }
   .sync-status.synced { display: block; color: var(--green-mid); }
   .sync-status.error { display: block; color: #E74C3C; }
 
-  .lang-toggle { position: fixed; top: 14px; left: 14px; z-index: 200; display: flex; background: var(--white); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); overflow: hidden; }
+  .lang-toggle { position: fixed; top: 14px; left: 14px; z-index: 200; display: flex; background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); overflow: hidden; }
   .lang-btn { padding: 8px 14px; border: none; background: transparent; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; color: var(--text-secondary); }
   .lang-btn.active { background: var(--green-deep); color: var(--white); }
 
-  .live-clock-bar { position: fixed; top: 14px; right: 14px; z-index: 200; background: var(--white); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); padding: 8px 14px; font-family: var(--en-font); font-size: 0.78rem; font-weight: 600; color: var(--green-deep); direction: ltr; text-align: center; min-width: 100px; }
+  .live-clock-bar { position: fixed; top: 14px; right: 14px; z-index: 200; background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); padding: 8px 14px; font-family: var(--en-font); font-size: 0.78rem; font-weight: 600; color: var(--green-deep); direction: ltr; text-align: center; min-width: 100px; }
   .live-clock-bar .clock-time { font-size: 1rem; font-weight: 700; }
   .live-clock-bar .clock-date { font-size: 0.65rem; color: var(--text-secondary); margin-top: 1px; }
 
@@ -83,7 +84,7 @@
 
   .onboard-overlay { display: none; position: fixed; inset: 0; background: rgba(10,14,26,0.7); backdrop-filter: blur(8px); z-index: 500; align-items: center; justify-content: center; }
   .onboard-overlay.show { display: flex; }
-  .onboard-card { background: var(--white); border-radius: 24px; padding: 36px 28px; max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.5s ease; }
+  .onboard-card { background: var(--surface); border-radius: 24px; padding: 36px 28px; max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.5s ease; }
   .onboard-card .ob-icon { font-size: 3rem; margin-bottom: 12px; }
   .onboard-card h2 { font-family: var(--dua-font); font-size: 1.6rem; color: var(--green-deep); margin-bottom: 4px; }
   .onboard-card .ob-sub { font-family: var(--en-font); font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
@@ -104,7 +105,7 @@
 
   .user-badge { display: none; text-align: center; margin-bottom: 16px; }
   .user-badge.show { display: block; }
-  .user-badge-inner { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid rgba(201,168,76,0.2); border-radius: 20px; padding: 8px 18px; box-shadow: var(--shadow); font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; color: var(--green-deep); }
+  .user-badge-inner { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid rgba(201,168,76,0.2); border-radius: 20px; padding: 8px 18px; box-shadow: var(--shadow); font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; color: var(--green-deep); }
   
   .gender-male { display: none; }
   .gender-female { display: none; }
@@ -124,7 +125,7 @@
 
   .umrah-timer { text-align: center; margin-bottom: 24px; display: none; }
   .umrah-timer.active { display: block; }
-  .timer-card { display: inline-flex; flex-direction: column; align-items: center; background: var(--white); border-radius: 14px; padding: 16px 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); }
+  .timer-card { display: inline-flex; flex-direction: column; align-items: center; background: var(--surface); border-radius: 14px; padding: 16px 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); }
   .timer-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
   .timer-label-en { font-family: var(--en-font); font-size: 0.7rem; color: var(--text-secondary); direction: ltr; }
   .timer-started { font-family: var(--en-font); font-size: 0.75rem; color: var(--gold-dark); margin-top: 2px; direction: ltr; }
@@ -136,7 +137,7 @@
   .pause-btn { margin-top: 10px; padding: 8px 24px; border: 2px solid var(--green-mid); border-radius: 10px; background: transparent; color: var(--green-deep); font-family: var(--en-font); font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.3s; }
   .pause-btn.paused { border-color: var(--green-deep); background: var(--green-deep); color: var(--white); }
 
-  .progress-wrap { background: var(--white); border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); position: sticky; top: 8px; z-index: 100; }
+  .progress-wrap { background: var(--surface); border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.15); position: sticky; top: 8px; z-index: 100; }
   .progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; font-weight: 600; color: var(--green-deep); }
   .progress-label-en { font-family: var(--en-font); font-size: 0.75rem; color: var(--green-mid); direction: ltr; }
   .progress-bar-bg { height: 8px; background: var(--cream-dark); border-radius: 4px; overflow: hidden; }
@@ -198,7 +199,7 @@
   .dua-copy-btn:hover { background: rgba(201,168,76,0.2); }
   .dua-copy-btn.copied { background: rgba(39,174,96,0.15); border-color: rgba(39,174,96,0.3); color: #27AE60; }
 
-  .step-card { background: var(--white); border-radius: 20px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; opacity:0; transform: translateY(20px); transition: all 0.3s ease; }
+  .step-card { background: var(--surface); border-radius: 20px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; opacity:0; transform: translateY(20px); transition: all 0.3s ease; }
   .step-card.visible { opacity: 1; transform: translateY(0); }
   .step-header { background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; user-select: none; transition: filter 0.3s; }
   .step-number { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--en-font); font-size: 1.2rem; font-weight: 700; color: var(--gold); flex-shrink: 0; }
@@ -269,7 +270,7 @@
   .complete-btn { width: 100%; padding: 14px; margin-top: 16px; border: 2px solid var(--green-mid); background: transparent; color: var(--green-deep); border-radius: 12px; font-family: var(--ar-font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
   .complete-btn.done { background: var(--gold); border-color: var(--gold); color: var(--white); }
 
-  .activity-log-section { background: var(--white); border-radius: 20px; margin-top: 24px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; }
+  .activity-log-section { background: var(--surface); border-radius: 20px; margin-top: 24px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; }
   .activity-log-header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px 24px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
   .activity-log-header h3 { font-family: var(--dua-font); font-size: 1.2rem; color: var(--gold); flex: 1; }
   .activity-log-header .log-count { font-family: var(--en-font); font-size: 0.75rem; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 10px; }
@@ -319,7 +320,44 @@
   
   .share-btn { background: rgba(82, 183, 136, 0.15); border-color: rgba(82, 183, 136, 0.4); color: var(--green-light); }
   .share-btn:hover { background: var(--green-light); color: var(--white); }
+
+  /* ===== DARK MODE ===== */
+  :root[data-theme="dark"] {
+    --cream: #0E1712; --cream-dark: #24342B; --surface: #17241D;
+    --text-primary: #EEE5D0; --text-secondary: #BDB39C; --gold-dark: #D9B864;
+    --shadow: 0 4px 24px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="dark"] .header h1, :root[data-theme="dark"] .onboard-card h2,
+  :root[data-theme="dark"] .ob-field label, :root[data-theme="dark"] .ob-gender-btn .ob-g-label,
+  :root[data-theme="dark"] .timer-elapsed, :root[data-theme="dark"] .pause-btn,
+  :root[data-theme="dark"] .progress-label, :root[data-theme="dark"] .journey-node.current .journey-label,
+  :root[data-theme="dark"] .install-prompt .install-title, :root[data-theme="dark"] .log-table th { color: #9ED9B8; }
+  :root[data-theme="dark"] .section-title { color: var(--gold-light); }
+  :root[data-theme="dark"] .live-clock-bar, :root[data-theme="dark"] .live-clock-bar .clock-time { color: #9ED9B8; }
+  :root[data-theme="dark"] .live-clock-bar .clock-date { color: var(--text-secondary); }
+  :root[data-theme="dark"] .completed-banner p, :root[data-theme="dark"] .about-section p { color: #FDF8ED; }
+  :root[data-theme="dark"] .dua-box { background: linear-gradient(135deg, #2A2616, #221E12); border-color: rgba(201,168,76,0.35); }
+  :root[data-theme="dark"] .dua-arabic { color: #F2E3B3; }
+  :root[data-theme="dark"] .quran-box { background: linear-gradient(135deg, #221C33, #1C172B); border-color: #5B4A8B; }
+  :root[data-theme="dark"] .quran-box .dua-label, :root[data-theme="dark"] .quran-box .dua-label-en { color: #C4B5FD; }
+  :root[data-theme="dark"] .quran-box .dua-arabic { color: #E4DBFF; }
+  :root[data-theme="dark"] .note-box { background: rgba(82,183,136,0.10); color: var(--text-primary); }
+  :root[data-theme="dark"] .warn-box { background: rgba(220,38,38,0.12); border-color: rgba(252,165,165,0.35); color: #F5C2C2; }
+  :root[data-theme="dark"] .warn-en { color: #F5A3A3; }
+  :root[data-theme="dark"] .ob-input { color: var(--text-primary); }
+  :root[data-theme="dark"] .ob-gender-btn.selected { background: rgba(158,217,184,0.12); border-color: #9ED9B8; }
+  .theme-btn { padding: 8px 12px; border: none; border-inline-start: 1px solid rgba(201,168,76,0.2); background: transparent; font-size: 0.85rem; cursor: pointer; }
 </style>
+<script>
+(function(){var t=null;try{t=localStorage.getItem('umrah_theme');}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);})();
+function toggleTheme(){var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('umrah_theme',t);}catch(e){}
+var b=document.getElementById('themeBtn');if(b)b.textContent=t==='dark'?'☀️':'🌙';
+var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#0E1712':'#1B4332');}
+document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('themeBtn');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';});
+</script>
 </head>
 <body>
 
@@ -331,11 +369,13 @@
   <button class="lang-btn active" aria-label="Toggle Bilingual Mode" onclick="setLang('both',this)">ثنائي</button>
   <button class="lang-btn" aria-label="Toggle Arabic Language" onclick="setLang('ar',this)">عربي</button>
   <button class="lang-btn" aria-label="Toggle English Language" onclick="setLang('en',this)">EN</button>
+  <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" onclick="toggleTheme()">🌙</button>
 </div>
 
 <div class="live-clock-bar">
   <div class="clock-time" id="liveClock" aria-live="polite">--:--:--</div>
   <div class="clock-date" id="liveDate">---</div>
+  <div class="clock-date clock-hijri" id="liveHijri"></div>
 </div>
 
 <div class="install-prompt" id="installPrompt">
@@ -708,7 +748,8 @@ function fmtDate(d) { return d.toLocaleDateString('en-US',{weekday:'short',year:
 function fmtDateTime(d) { return fmtDate(d)+' '+fmtTime(d); }
 function fmtDuration(ms) { const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
 
-function updateClock() { const n=now(); document.getElementById('liveClock').textContent=fmtTime(n); document.getElementById('liveDate').textContent=fmtDate(n); }
+function fmtHijri(d) { try { return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d); } catch(e) { return ''; } }
+function updateClock() { const n=now(); document.getElementById('liveClock').textContent=fmtTime(n); document.getElementById('liveDate').textContent=fmtDate(n); const h=fmtHijri(n); const el=document.getElementById('liveHijri'); if (el.textContent!==h) el.textContent=h; }
 setInterval(updateClock, 1000); updateClock();
 
 window.addEventListener('offline', () => document.getElementById('offlineBar').classList.add('show'));
