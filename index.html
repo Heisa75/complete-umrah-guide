@@ -563,8 +563,11 @@ const IHRAM_RULES = {
 };
 
 function computeIhramState() {
-  // Step 5 (index 4) is Halq/Taqsir - once done, pilgrim is released
-  return completedSteps.has(4) ? 'released' : 'inIhram';
+  // Step 5 (index 4) is Halq/Taqsir, but it only releases the pilgrim once
+  // Tawaf (2) and Sa'i (3) have actually been performed. Steps can be ticked
+  // in any order, so check the rites rather than that one box.
+  const rites = completedSteps.has(2) && completedSteps.has(3);
+  return (rites && completedSteps.has(4)) ? 'released' : 'inIhram';
 }
 
 function updateStatusBanner() {
@@ -658,7 +661,10 @@ function renderJourneyBar() {
 // ============================================================
 window.copyDua = function(btn, text) {
   haptic(30);
-  navigator.clipboard.writeText(text).then(function() {
+  const write = (navigator.clipboard && navigator.clipboard.writeText)
+    ? navigator.clipboard.writeText(text)
+    : Promise.reject(new Error('clipboard unavailable'));
+  write.then(function() {
     btn.classList.add('copied');
     btn.innerHTML = '✅ Copied!';
     setTimeout(function() { btn.classList.remove('copied'); btn.innerHTML = '📋 Copy | نسخ'; }, 2000);
@@ -760,7 +766,8 @@ window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); defe
 document.getElementById('installBtn').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('installPrompt').classList.remove('show'); } });
 
 function addLog(type, tag, activity) { const t = now(); const dur = umrahStartTime ? fmtDuration(t-umrahStartTime) : '00:00:00'; activityLog.push({ time: fmtTime(t), date: fmtDate(t), type: tag, activity, duration: dur, raw: t.toISOString() }); renderLog(); saveState(); }
-function renderLog() { const tbody = document.getElementById('logTableBody'); tbody.innerHTML = ''; activityLog.forEach((l,i) => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${i+1}</td><td>${l.time}</td><td><span class="log-tag ${l.type}">${l.type}</span></td><td>${l.activity}</td><td>${l.duration}</td>`; tbody.appendChild(tr); }); document.getElementById('logCount').textContent = activityLog.length + ' entries'; }
+function escHtml(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function renderLog() { const tbody = document.getElementById('logTableBody'); tbody.innerHTML = ''; activityLog.forEach((l,i) => { const tr = document.createElement('tr'); tr.innerHTML = `<td>${i+1}</td><td>${escHtml(l.time)}</td><td><span class="log-tag ${escHtml(l.type)}">${escHtml(l.type)}</span></td><td>${escHtml(l.activity)}</td><td>${escHtml(l.duration)}</td>`; tbody.appendChild(tr); }); document.getElementById('logCount').textContent = activityLog.length + ' entries'; }
 
 function exportLog() {
   let text = '=== UMRAH ACTIVITY LOG ===\n'; if (userName) text += 'Name: '+userName+' ('+userGender+')\n'; if (umrahStartTime) text += 'Started: '+fmtDateTime(umrahStartTime)+'\n'; if (totalPausedMs > 0) text += 'Total Paused: '+fmtDuration(totalPausedMs)+'\n';
@@ -770,18 +777,30 @@ function exportLog() {
   const blob = new Blob([text],{type:'text/plain;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'umrah-log-'+now().toISOString().slice(0,10)+'.txt'; a.click(); haptic(100);
 }
 
+// Remove the pilgrim's name before anything leaves the device. A plain
+// substring replace mangles every word that happens to contain a short name,
+// so match it on word boundaries only.
+function scrubName(text) {
+  const t = String(text == null ? '' : text);
+  if (!userName) return t;
+  const name = userName.trim();
+  if (name.length < 2) return t;
+  const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return t.replace(new RegExp('(^|[^\\p{L}\\p{N}])' + esc + '(?![\\p{L}\\p{N}])', 'gu'), '$1—');
+}
+
 async function syncToCloud() {
   if (!GOOGLE_SCRIPT_URL) { alert('Google Sheets URL not configured.'); return; }
   const ok = confirm('مشاركة سجل عمرتك مع مطوّر التطبيق؟\nسيتم إرسال: أوقات الخطوات والأشواط، المدة، الجنس، ونوع الجهاز. لن يُرسل اسمك.\n\nShare your Umrah log with the app developer?\nSent: step and round times, durations, gender and device type. Your name is NOT sent.');
   if (!ok) return;
-  const syncEl = document.getElementById('syncStatus'); syncEl.className = 'sync-status syncing'; syncEl.textContent = '☁️ Syncing...';
+  const syncEl = document.getElementById('syncStatus'); syncEl.style.display = ''; syncEl.className = 'sync-status syncing'; syncEl.textContent = '☁️ Syncing...';
   try {
-    const payload = { sessionId: SESSION_ID, userGender: userGender, umrahStarted: umrahStartTime ? fmtDateTime(umrahStartTime) : 'N/A', totalDuration: sinceStart(), totalPausedTime: fmtDuration(totalPausedMs), deviceInfo: navigator.userAgent.slice(0,100), logs: activityLog.map(l => ({ ...l, activity: userName ? String(l.activity||'').split(userName).join('—') : l.activity })) };
+    const payload = { sessionId: SESSION_ID, userGender: userGender, umrahStarted: umrahStartTime ? fmtDateTime(umrahStartTime) : 'N/A', totalDuration: sinceStart(), totalPausedTime: fmtDuration(totalPausedMs), deviceInfo: navigator.userAgent.slice(0,100), logs: activityLog.map(l => ({ ...l, activity: scrubName(l.activity) })) };
     const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) });
     const data = await res.json();
     if (data.status === 'success') { syncEl.className = 'sync-status synced'; syncEl.textContent = '✅ Synced to Google Sheets'; haptic(100); } else { throw new Error(data.message); }
   } catch(e) { syncEl.className = 'sync-status error'; syncEl.textContent = '❌ Sync failed'; }
-  setTimeout(() => syncEl.style.display = 'none', 4000);
+  setTimeout(() => { syncEl.className = 'sync-status'; }, 4000);
 }
 
 // ============================================================
@@ -825,13 +844,15 @@ function applyStartedUI() { const btn = document.getElementById('startBtn'); btn
 const dotsC = document.getElementById('progressDots');
 STEPS.forEach((_,i) => { const dot = document.createElement('div'); dot.className = 'progress-dot'; dot.textContent = i+1; dot.onclick = () => document.querySelectorAll('.step-card')[i].scrollIntoView({behavior:'smooth',block:'start'}); dotsC.appendChild(dot); });
 
-function updateProgress() {
+function updateProgress(skipSave) {
   const pct = Math.round((completedSteps.size/STEPS.length)*100); document.getElementById('progressFill').style.width = pct+'%'; document.getElementById('progressPercent').textContent = pct+'%'; document.querySelectorAll('.progress-dot').forEach((d,i) => d.classList.toggle('completed', completedSteps.has(i)));
   const banner = document.getElementById('completedBanner');
   if (completedSteps.size === STEPS.length) { banner.classList.add('show'); document.getElementById('totalDuration').textContent = '⏱️ Total: '+sinceStart(); if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval=null; } releaseWakeLock();  } else { banner.classList.remove('show'); }
   updateStatusBanner();
   renderJourneyBar();
-  saveState();
+  // On boot the in-memory state is still empty; saving here would overwrite
+  // the stored session before the pilgrim can choose to restore it.
+  if (!skipSave) saveState();
 }
 
 window.setLang = function(lang, btn) {
@@ -893,7 +914,7 @@ function restoreState() {
 
 function freshStart() { clearState(); document.getElementById('restoreBanner').classList.remove('show'); }
 
-(function init() { const saved = loadState(); if (saved && saved.umrahStartTime) { const startDate = new Date(saved.umrahStartTime); const name = saved.userName ? saved.userName + ' — ' : ''; const info = `${name}Started: ${fmtDateTime(startDate)} | ${(saved.activityLog||[]).length} log entries | ${(saved.completedSteps||[]).length}/${STEPS.length} steps`; document.getElementById('restoreInfo').textContent = info; document.getElementById('restoreBanner').classList.add('show'); } updateProgress(); })();
+(function init() { const saved = loadState(); if (saved && saved.umrahStartTime) { const startDate = new Date(saved.umrahStartTime); const name = saved.userName ? saved.userName + ' — ' : ''; const info = `${name}Started: ${fmtDateTime(startDate)} | ${(saved.activityLog||[]).length} log entries | ${(saved.completedSteps||[]).length}/${STEPS.length} steps`; document.getElementById('restoreInfo').textContent = info; document.getElementById('restoreBanner').classList.add('show'); } updateProgress(true); })();
 
 if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed')); }); }
 </script>
