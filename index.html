@@ -69,6 +69,9 @@
   .lang-toggle { position: fixed; top: 14px; left: 14px; z-index: 200; display: flex; background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); overflow: hidden; }
   .lang-btn { padding: 8px 14px; border: none; background: transparent; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; color: var(--text-secondary); }
   .lang-btn.active { background: var(--green-deep); color: var(--white); }
+  /* Narrow phones: the bar (with the Sabil button) must not run under the clock */
+  @media (max-width: 430px) { .lang-toggle .lang-btn { padding: 8px 9px; } .lang-toggle .theme-btn { padding: 8px 8px; } }
+  @media (max-width: 384px) { html body .live-clock-bar { top: 64px; } }
 
   .live-clock-bar { position: fixed; top: 14px; right: 14px; z-index: 200; background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.2); padding: 8px 14px; font-family: var(--en-font); font-size: 0.78rem; font-weight: 600; color: var(--green-deep); direction: ltr; text-align: center; min-width: 100px; }
   .live-clock-bar .clock-time { font-size: 1rem; font-weight: 700; }
@@ -195,7 +198,7 @@
   .step-icon-badge { font-size: 1.3rem; margin-left: 4px; }
 
   /* ═══ DUA COPY BUTTON ═══ */
-  .dua-copy-btn { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 4px 12px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); border-radius: 8px; font-family: var(--en-font); font-size: 0.65rem; font-weight: 600; color: var(--gold-dark); cursor: pointer; transition: all 0.2s; }
+  .dua-copy-btn { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; min-height: 44px; padding: 6px 14px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); border-radius: 8px; font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; color: var(--gold-dark); cursor: pointer; transition: all 0.2s; }
   .dua-copy-btn:hover { background: rgba(201,168,76,0.2); }
   .dua-copy-btn.copied { background: rgba(39,174,96,0.15); border-color: rgba(39,174,96,0.3); color: #27AE60; }
 
@@ -268,7 +271,7 @@
   .round-log-item .rnd-dur { color: var(--gold-light); font-weight: 600; }
 
   .complete-btn { width: 100%; padding: 14px; margin-top: 16px; border: 2px solid var(--green-mid); background: transparent; color: var(--green-deep); border-radius: 12px; font-family: var(--ar-font); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-  .complete-btn.done { background: var(--gold); border-color: var(--gold); color: var(--white); }
+  .complete-btn.done { background: var(--gold); border-color: var(--gold); color: var(--green-deep); }
 
   .activity-log-section { background: var(--surface); border-radius: 20px; margin-top: 24px; box-shadow: var(--shadow); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; }
   .activity-log-header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px 24px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
@@ -333,6 +336,11 @@
   :root[data-theme="dark"] .progress-label, :root[data-theme="dark"] .journey-node.current .journey-label,
   :root[data-theme="dark"] .install-prompt .install-title, :root[data-theme="dark"] .log-table th { color: #9ED9B8; }
   :root[data-theme="dark"] .section-title { color: var(--gold-light); }
+  /* English sub-labels were #2D6A4F on the dark surface (2.5:1) */
+  :root[data-theme="dark"] .progress-label-en, :root[data-theme="dark"] .section-title-en, :root[data-theme="dark"] .note-en { color: #9ED9B8; }
+  /* Buttons and badges with dark-green text on the dark surface (1.45:1) — the "step done" button was nearly invisible */
+  :root[data-theme="dark"] .complete-btn:not(.done), :root[data-theme="dark"] .export-btn:not(.cloud):not(.reset-btn), :root[data-theme="dark"] .user-badge-inner, :root[data-theme="dark"] .sync-status.synced, :root[data-theme="dark"] .timestamp-badge { color: #9ED9B8; }
+  :root[data-theme="dark"] .complete-btn:not(.done), :root[data-theme="dark"] .export-btn:not(.cloud):not(.reset-btn) { border-color: #52B788; }
   :root[data-theme="dark"] .live-clock-bar, :root[data-theme="dark"] .live-clock-bar .clock-time { color: #9ED9B8; }
   :root[data-theme="dark"] .live-clock-bar .clock-date { color: var(--text-secondary); }
   :root[data-theme="dark"] .completed-banner p, :root[data-theme="dark"] .about-section p { color: #FDF8ED; }
@@ -371,6 +379,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.getElemen
   <button class="lang-btn" aria-label="Toggle English Language" onclick="setLang('en',this)">EN</button>
   <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" onclick="toggleTheme()">🌙</button>
   <button class="theme-btn" id="tourBtn" aria-label="جولة في التطبيق · App tour" onclick="SabilTour.start()" style="font-weight:700;font-size:.95rem">؟</button>
+  <a class="theme-btn" id="sabilBtn" href="https://sabil-app.netlify.app/" aria-label="العودة إلى سبيل · Back to Sabil" title="سبيل · Sabil" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></a>
 </div>
 
 <div class="live-clock-bar">
