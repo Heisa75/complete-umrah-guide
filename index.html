@@ -292,7 +292,6 @@
 
   .export-buttons { display: flex; gap: 10px; margin: 16px; flex-wrap: wrap; }
   .export-btn { padding: 10px 20px; border: 2px solid var(--green-mid); background: transparent; color: var(--green-deep); border-radius: 10px; font-family: var(--en-font); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-  .export-btn.cloud { border-color: #3498DB; color: #3498DB; }
   .export-btn.reset-btn { border-color: #E74C3C; color: #E74C3C; }
 
   .completed-banner { display: none; text-align: center; padding: 40px 24px; background: linear-gradient(135deg, var(--green-deep), var(--green-mid)); border-radius: 20px; margin-top: 20px; box-shadow: var(--shadow); }
@@ -489,7 +488,7 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.getElemen
     </div>
     <div class="activity-log-body">
       <table class="log-table"><thead><tr><th>#</th><th>Time</th><th>Type</th><th>Activity</th><th>Duration</th></tr></thead><tbody id="logTableBody"></tbody></table>
-      <div class="export-buttons"><button class="export-btn" onclick="exportLog()">📥 Export .txt</button><button class="export-btn cloud" onclick="syncToCloud()">☁️ Share log with developer (optional)</button><button class="export-btn reset-btn" onclick="confirmReset()">🗑️ Reset All Data</button></div>
+      <div class="export-buttons"><button class="export-btn" onclick="exportLog()">📥 Export .txt</button><button class="export-btn reset-btn" onclick="confirmReset()">🗑️ Reset All Data</button></div>
     </div>
   </div>
 
@@ -543,7 +542,6 @@ document.addEventListener('DOMContentLoaded',function(){var b=document.getElemen
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsdMbrFBqrxuYoEURoIUsG2NdBAm0EA8mxKzxhc6fw0pC4rrcXbgje9nkv-8povTdW/exec';
 
 let wakeLock = null;
 async function requestWakeLock() { try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); } } catch (err) { } }
@@ -793,30 +791,7 @@ function exportLog() {
 }
 
 // Remove the pilgrim's name before anything leaves the device. A plain
-// substring replace mangles every word that happens to contain a short name,
-// so match it on word boundaries only.
-function scrubName(text) {
-  const t = String(text == null ? '' : text);
-  if (!userName) return t;
-  const name = userName.trim();
-  if (name.length < 2) return t;
-  const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return t.replace(new RegExp('(^|[^\\p{L}\\p{N}])' + esc + '(?![\\p{L}\\p{N}])', 'gu'), '$1—');
-}
 
-async function syncToCloud() {
-  if (!GOOGLE_SCRIPT_URL) { alert('Google Sheets URL not configured.'); return; }
-  const ok = confirm('مشاركة سجل عمرتك مع مطوّر التطبيق؟\nسيتم إرسال: أوقات الخطوات والأشواط، المدة، الجنس، ونوع الجهاز. لن يُرسل اسمك.\n\nShare your Umrah log with the app developer?\nSent: step and round times, durations, gender and device type. Your name is NOT sent.');
-  if (!ok) return;
-  const syncEl = document.getElementById('syncStatus'); syncEl.style.display = ''; syncEl.className = 'sync-status syncing'; syncEl.textContent = '☁️ Syncing...';
-  try {
-    const payload = { sessionId: SESSION_ID, userGender: userGender, umrahStarted: umrahStartTime ? fmtDateTime(umrahStartTime) : 'N/A', totalDuration: sinceStart(), totalPausedTime: fmtDuration(totalPausedMs), deviceInfo: navigator.userAgent.slice(0,100), logs: activityLog.map(l => ({ ...l, activity: scrubName(l.activity) })) };
-    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) });
-    const data = await res.json();
-    if (data.status === 'success') { syncEl.className = 'sync-status synced'; syncEl.textContent = '✅ Synced to Google Sheets'; haptic(100); } else { throw new Error(data.message); }
-  } catch(e) { syncEl.className = 'sync-status error'; syncEl.textContent = '❌ Sync failed'; }
-  setTimeout(() => { syncEl.className = 'sync-status'; }, 4000);
-}
 
 // ============================================================
 // SHARE APP
