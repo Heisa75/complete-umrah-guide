@@ -23,9 +23,64 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({ status: 'ok', message: 'Umrah Log API is running. Use POST to submit logs.' })).setMimeType(ContentService.MimeType.JSON);
 }
 
+/**
+ * The endpoint cannot be made private: the URL ships inside a public offline PWA,
+ * so anything embedded in the page as a key is readable by every visitor and is
+ * theatre, not authentication. Real authentication would need a server, which this
+ * app deliberately does not have.
+ *
+ * What is achievable, and what these two functions do, is to make the endpoint
+ * useless for anything but its purpose: a submission must look like a genuine Umrah
+ * log, and the sheet cannot be flooded. Combined with cell() above — which already
+ * stops formula injection — the remaining worst case is a handful of plausible-looking
+ * junk rows, not a compromised spreadsheet.
+ */
+function looksLikeUmrahLog(data) {
+  if (!data || typeof data !== 'object') return false;
+  // The client builds this as 'umrah-' + a base-36 timestamp.
+  if (typeof data.sessionId !== 'string' || !/^umrah-[0-9a-z]{6,16}$/.test(data.sessionId)) return false;
+  // '' until the pilgrim chooses; 'male' or 'female' after.
+  if (data.userGender !== undefined && ['male', 'female', '', 'N/A'].indexOf(data.userGender) === -1) return false;
+  if (!Array.isArray(data.logs) || data.logs.length === 0 || data.logs.length > 500) return false;
+  // Every entry must carry the fields the app writes.
+  for (var i = 0; i < data.logs.length; i++) {
+    var l = data.logs[i];
+    if (!l || typeof l !== 'object') return false;
+    if (typeof l.time !== 'string' || typeof l.activity !== 'string') return false;
+  }
+  return true;
+}
+
+/** At most MAX_PER_DAY submissions a day, and MAX_PER_SESSION from one session. */
+function withinQuota(sessionId) {
+  var MAX_PER_DAY = 300;
+  var MAX_PER_SESSION = 10;
+  var props = PropertiesService.getScriptProperties();
+  var today = new Date().toISOString().slice(0, 10);
+  var dayKey = 'count-' + today;
+  var sessionKey = 'session-' + today + '-' + sessionId;
+
+  var day = Number(props.getProperty(dayKey) || 0);
+  var session = Number(props.getProperty(sessionKey) || 0);
+  if (day >= MAX_PER_DAY || session >= MAX_PER_SESSION) return false;
+
+  props.setProperty(dayKey, String(day + 1));
+  props.setProperty(sessionKey, String(session + 1));
+  return true;
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
+
+    // Reject anything that is not a real log before touching the spreadsheet.
+    if (!looksLikeUmrahLog(data)) {
+      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Could not save the log.' })).setMimeType(ContentService.MimeType.JSON);
+    }
+    if (!withinQuota(data.sessionId)) {
+      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Could not save the log.' })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     const ss = getOrCreateSpreadsheet();
     const sheet = ss.getSheetByName('Logs') || ss.insertSheet('Logs');
     
